@@ -1,0 +1,56 @@
+.navbar {
+    .btn-elegant{
+        background-color:#212121 !important;
+        box-shadow: none;
+    }
+}
+.parallax-section {
+    padding-top: 5%;
+    min-height: 95vh;
+    .container {
+        max-width: 80%;
+        padding-top: 1%;
+        h1{
+            font-family: 'Abril Fatface', cursive;
+            color: #fff3e0;
+        }
+    }
+}
+
+#about{
+    padding-top: 10%;
+    .jumbotron {
+        background-color: rgba(255,255,255,0.2);
+    }
+}
+
+#team{
+    .card {
+        background-color: rgba(255,255,255,0.2);
+    }
+}
+
+.parallax-section:nth-of-type(2n) {
+    background-color: #37474F;
+}
+
+.parallax-section:nth-of-type(2n+1) {
+    background-color: #4B515D;
+}
+
+.parallax-section:nth-of-type(4) {
+    padding-top: 0;
+}
+
+.page-footer {
+    margin-top: 0px !important;
+}
+
+.btn-link{
+    background-color: #fff !important;
+    color: #2e2e2e;
+}
+
+.btn-link:hover{
+    color: #2e2e2e;
+}

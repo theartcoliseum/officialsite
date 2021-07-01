@@ -1,7 +1,12 @@
 import React from "react";
 import { MDBBtn, MDBJumbotron, MDBContainer } from "mdbreact";
+import { useHistory, useRouteMatch } from 'react-router-dom';
 
 const Dashboard = () => {
+  let history = useHistory();
+  const goToHome = () => {
+    history.push('/protected');
+  }
   return (
     <div className="parallax-section" id="dashboard">
       <MDBContainer>
@@ -17,7 +22,9 @@ const Dashboard = () => {
           <MDBBtn color="elegant" size="lg">
             Learn more
     </MDBBtn>
+        <span onClick={goToHome}>Go to Homepage</span>
         </MDBJumbotron>
+        
       </MDBContainer>
     </div>
   );

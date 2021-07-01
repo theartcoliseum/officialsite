@@ -1,3 +1,4 @@
+/*eslint-disable*/
 import React, { useState, Fragment, useEffect, useContext } from "react";
 import {
     MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBDropdown,
@@ -29,6 +30,7 @@ const Header = () => {
     }
 
     const gotoDashboard = () => {
+        if(history.location.pathname.includes('dashboard')) return;
         history.push(`protected/dashboard`);
     }
 

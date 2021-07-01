@@ -52,7 +52,7 @@ const PastAttendedEvents = () => {
               </MDBCardHeader>
             <MDBCardBody className="table-container">
                 <MDBCardText>
-                <MDBTable btn responsive scrollY striped sorting={true}>
+                <MDBTable btn responsive scrollY striped sorting="true">
                         <MDBTableHead columns={columns} />
                         <MDBTableBody rows={rows_outline_btn} />
                     </MDBTable>

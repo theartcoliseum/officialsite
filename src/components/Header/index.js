@@ -1,9 +1,10 @@
+/*eslint-disable*/
 import React, { useState, Fragment, useEffect, useContext } from "react";
 import {
     MDBNavbar, MDBNavbarBrand, MDBNavbarNav, MDBNavItem, MDBNavLink, MDBNavbarToggler, MDBCollapse, MDBDropdown,
     MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBIcon, MDBBtn, MDBModal
 } from "mdbreact";
-import { useHistory, useRouteMatch } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { Link } from 'react-scroll';
 import { AuthContext } from '../../context/AuthContext';
 import Login from '../Login';
@@ -11,10 +12,13 @@ import Login from '../Login';
 
 const Header = () => {
     let history = useHistory();
+    const location = useLocation();
+
     const {user, signin, signout} = useContext(AuthContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [isHome, setIsHome] = useState(true);
 
     useEffect(() => {
         if(user) {
@@ -24,12 +28,29 @@ const Header = () => {
         }
     }, [user]);
 
+    useEffect(() => {
+        if(location && location.pathname) {
+            const paths = location.pathname.split('/');
+            console.log(paths);
+            if(paths.length > 2) {
+                setIsHome(false);
+            } else {
+                setIsHome(true);
+            }
+        }
+    }, [location]);
+
     const toggleCollapse = () => {
         setIsOpen(!isOpen);
     }
 
     const gotoDashboard = () => {
+        if(history.location.pathname.includes('dashboard')) return;
         history.push(`protected/dashboard`);
+    }
+
+    const goToHome = () => {
+        history.push('/protected');
     }
 
     const login = () => {
@@ -43,13 +64,14 @@ const Header = () => {
     return (
         <Fragment>
             <MDBNavbar color="elegant-color-dark" dark expand="md" scrolling fixed="top">
-                <MDBNavbarBrand>
+                <MDBNavbarBrand onClick={goToHome}>
                     {/* <img src={logo} alt="site logo" /> */}
                     <strong>The Art Coliseum</strong>
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={toggleCollapse} />
                 <MDBCollapse id="navbarCollapse3" isOpen={isOpen} navbar>
                     <MDBNavbarNav left>
+                        {isHome && (<Fragment>
                         <MDBNavItem>
                             <MDBBtn color="elegant">
                                 <Link activeClass="active" to="events" spy={true} smooth={true} duration={1000}>
@@ -78,6 +100,7 @@ const Header = () => {
                                     </Link>
                             </MDBBtn>
                         </MDBNavItem>
+                        </Fragment>)}
                     </MDBNavbarNav>
                     <MDBNavbarNav right>
                         <MDBNavItem>
@@ -104,6 +127,7 @@ const Header = () => {
                                     {!user && <MDBDropdownItem onClick={login} >Login</MDBDropdownItem>}
                                     {user && (
                                         <Fragment>
+                                            <MDBDropdownItem onClick={goToHome}>Home</MDBDropdownItem>
                                         <MDBDropdownItem onClick={gotoDashboard}>My Dashboard</MDBDropdownItem>
                                         <MDBDropdownItem divider />
                                         <MDBDropdownItem onClick={logout}>Logout</MDBDropdownItem>

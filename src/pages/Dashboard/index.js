@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
-
+// import { useHistory } from 'react-router-dom';
 import NextEvent from './NextEvent';
 import EventsSummary from './EventsSummary';
 import PollSummary from './PollSummary';
@@ -9,6 +9,12 @@ import PastAttendedEvents from './PastAttendedEvents';
 
 const Dashboard = () => {
   const [nextDate, setNextDate] = useState("");
+
+  // let history = useHistory();
+
+  // const goToHome = () => {
+  //   history.push('/protected');
+  // }
 
   useEffect(() => {
     let tempDate = new Date();

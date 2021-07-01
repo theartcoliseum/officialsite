@@ -1,23 +1,44 @@
-import React from "react";
-import { MDBBtn, MDBJumbotron, MDBContainer } from "mdbreact";
+import React, { useState, useEffect } from "react";
+import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
+
+import NextEvent from './NextEvent';
+import EventsSummary from './EventsSummary';
+import PollSummary from './PollSummary';
+import UpcomingEvents from './UpcomingEvents';
+import PastAttendedEvents from './PastAttendedEvents';
 
 const Dashboard = () => {
+  const [nextDate, setNextDate] = useState("");
+
+  useEffect(() => {
+    let tempDate = new Date();
+    tempDate.setDate(tempDate.getDate() + 15);
+    setNextDate(tempDate);
+  }, []);
+  
   return (
     <div className="parallax-section" id="dashboard">
       <MDBContainer>
-        <MDBJumbotron>
-          <h1 className="h1-responsive">About Us</h1>
-          <p className="lead">
-            Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit
-    </p>
-          <hr className="my-2" />
-          <p>
-          Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor SitLorem Ispum Dolor SitLorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit
-    </p>
-          <MDBBtn color="elegant" size="lg">
-            Learn more
-    </MDBBtn>
-        </MDBJumbotron>
+        <h1 className="h1-responsive">My Dashboard</h1>
+        <MDBRow>
+          <MDBCol lg="4" md="4" className="mb-lg-0 mb-5">
+            <NextEvent nextDate={nextDate} />  
+          </MDBCol>
+          <MDBCol lg="4" md="4" className="mb-lg-0 mb-5">
+            <EventsSummary />
+          </MDBCol>
+          <MDBCol lg="4" md="4" className="mb-lg-0 mb-5">
+            <PollSummary />
+          </MDBCol>
+        </MDBRow>
+        <MDBRow>
+          <MDBCol lg="6" md="6" className="mb-lg-0 mb-5">
+            <UpcomingEvents />
+          </MDBCol>
+          <MDBCol lg="6" md="6" className="mb-lg-0 mb-5">
+            <PastAttendedEvents />
+          </MDBCol>
+        </MDBRow>
       </MDBContainer>
     </div>
   );

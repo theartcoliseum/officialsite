@@ -7,6 +7,7 @@
 .parallax-section {
     padding-top: 5%;
     min-height: 95vh;
+    padding-bottom: 50px;
     .container {
         max-width: 80%;
         padding-top: 1%;
@@ -14,19 +15,6 @@
             font-family: 'Abril Fatface', cursive;
             color: #fff3e0;
         }
-    }
-}
-
-#about{
-    padding-top: 10%;
-    .jumbotron {
-        background-color: rgba(255,255,255,0.2);
-    }
-}
-
-#team{
-    .card {
-        background-color: rgba(255,255,255,0.2);
     }
 }
 
@@ -53,4 +41,46 @@
 
 .btn-link:hover{
     color: #2e2e2e;
+}
+
+.row{
+    margin-bottom: 20px;
+}
+
+#about{
+    padding-top: 10%;
+    .jumbotron {
+        background-color: rgba(255,255,255,0.2);
+    }
+}
+
+#team{
+    .card {
+        background-color: rgba(255,255,255,0.2);
+    }
+}
+
+#dashboard{
+    .card-body {
+        min-height: 27vh;
+    }
+
+    .table-container{
+        height: 30vh;
+    }
+
+    .next-event{
+        .card-body{
+            h1{
+                color: #000;
+                font-size: 4em;
+                display: inline-block;
+            }
+            h2{
+                font-size: 3.5em;
+                display: inline-block;
+            }
+        }
+        
+    }
 }

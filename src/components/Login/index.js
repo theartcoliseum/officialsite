@@ -1,8 +1,21 @@
 import React, { Fragment, useState } from "react";
 import { MDBModalHeader, MDBModalBody, MDBModalFooter, MDBBtn, MDBInput } from "mdbreact";
+import createUser from '../../firebase/firebase.common';
 
 const Login = ({ signin, close, loginCallback }) => {
     const [isLogin, setIsLogin] = useState(true);
+
+    const registerUser = () => {
+        createUser("abc@gmail.com", "123451", successFn, errorFn);
+    }
+
+    const successFn = (user) => {
+        console.log(user);
+    }
+
+    const errorFn = (error) => {
+        console.log(error);
+    }
 
     return (
         <Fragment>
@@ -35,7 +48,7 @@ const Login = ({ signin, close, loginCallback }) => {
                                 error="wrong" success="right" />
                         </div>
                         <div className="text-center">
-                            <MDBBtn color="elegant">Register</MDBBtn>
+                            <MDBBtn color="elegant" onClick={registerUser}>Register</MDBBtn>
                             <MDBBtn color="elegant" type="reset">Reset</MDBBtn>
                         </div>
                         <div className="text-center">

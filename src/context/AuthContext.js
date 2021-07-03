@@ -19,7 +19,7 @@ function useProvideAuth() {
     }, [user]);
 
     const signin = () => {
-        signInUser("abcd@gmail.com", "123456",successFn)
+        signInUser("abcd@gmail.com", "13456",successFn)
     };
 
     const successFn = (user) =>{

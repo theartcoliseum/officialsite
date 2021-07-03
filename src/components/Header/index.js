@@ -72,6 +72,8 @@ const Header = () => {
 
     return (
         <Fragment>
+            <div id="error-toast">
+            </div>
             <MDBNavbar color="elegant-color-dark" dark expand="md" scrolling fixed="top">
                 <MDBNavbarBrand onClick={goToHome}>
                     {/* <img src={logo} alt="site logo" /> */}

@@ -1,20 +1,18 @@
 import React, { Fragment, useState } from "react";
 import { MDBModalHeader, MDBModalBody, MDBModalFooter, MDBBtn, MDBInput } from "mdbreact";
-import createUser from '../../firebase/firebase.common';
+import {createUser} from '../../firebase/firebase.auth';
 
 const Login = ({ signin, close, loginCallback }) => {
     const [isLogin, setIsLogin] = useState(true);
+    const [userDetails,setUserDetails] = useState({});
 
     const registerUser = () => {
-        createUser("abc@gmail.com", "123451", successFn, errorFn);
+        createUser("abcd@gmail.com", "123456", successFn);
     }
 
     const successFn = (user) => {
         console.log(user);
-    }
-
-    const errorFn = (error) => {
-        console.log(error);
+        setUserDetails(user);
     }
 
     return (

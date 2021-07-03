@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { signInUser } from '../firebase/firebase.auth';
 
 const AuthContext = createContext();
 
@@ -18,8 +19,16 @@ function useProvideAuth() {
     }, [user]);
 
     const signin = () => {
-        setUser({ username: 'Suvechhya', isLoggedIn: true});
+        signInUser("abcd@gmail.com", "123456",successFn)
     };
+
+    const successFn = (user) =>{
+        console.log(user);
+        if(user.email) {
+            setUser({ username: user.email, isLoggedIn: true});
+        }
+        
+    }
 
     const signout = () => {
         setUser(null);

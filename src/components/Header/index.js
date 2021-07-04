@@ -8,6 +8,15 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { Link } from 'react-scroll';
 import { AuthContext } from '../../context/AuthContext';
 import Login from '../Login';
+import firebaseConfig from '../../firebase/firebase.config';
+import firebase from "firebase/app";
+
+
+//initialise firebase as global object
+
+firebase.initializeApp(firebaseConfig);
+window.firebase = firebase;
+
 // import logo from '../../assets/images/logo.png';
 
 const Header = () => {
@@ -63,6 +72,8 @@ const Header = () => {
 
     return (
         <Fragment>
+            <div id="error-toast">
+            </div>
             <MDBNavbar color="elegant-color-dark" dark expand="md" scrolling fixed="top">
                 <MDBNavbarBrand onClick={goToHome}>
                     {/* <img src={logo} alt="site logo" /> */}

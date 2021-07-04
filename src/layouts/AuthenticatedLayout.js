@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Dashboard from '../pages/Dashboard';
 import HomePage from '../pages/HomePage';
+import Admin from '../pages/Admin';
 
 const AuthenticatedLayout = () => {
     let { path } = useRouteMatch();
@@ -17,6 +18,9 @@ const AuthenticatedLayout = () => {
                 </Route>
                 <Route path={`${path}/dashboard`}>
                     <Dashboard />
+                </Route>
+                <Route path={`${path}/admin`}>
+                    <Admin />
                 </Route>
             </Switch>
         </div>

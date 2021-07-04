@@ -14,21 +14,10 @@ function AuthContextCreator({ children }) {
 
 function useProvideAuth() {
     const [user, setUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
     }, [user]);
-
-    const signin = () => {
-        signInUser("abcd@gmail.com", "13456",successFn)
-    };
-
-    const successFn = (user) =>{
-        console.log(user);
-        if(user.email) {
-            setUser({ username: user.email, isLoggedIn: true});
-        }
-        
-    }
 
     const signout = () => {
         setUser(null);
@@ -36,8 +25,10 @@ function useProvideAuth() {
 
     return {
         user,
-        signin,
-        signout
+        setUser,
+        signout,
+        isLoading,
+        setIsLoading
     };
 }
 

@@ -7,15 +7,8 @@ import {
 import { useHistory, useLocation } from 'react-router-dom';
 import { Link } from 'react-scroll';
 import { AuthContext } from '../../context/AuthContext';
+import { signout } from '../../firebase/firebase.auth';
 import Login from '../Login';
-import firebaseConfig from '../../firebase/firebase.config';
-import firebase from "firebase/app";
-
-
-//initialise firebase as global object
-
-firebase.initializeApp(firebaseConfig);
-window.firebase = firebase;
 
 // import logo from '../../assets/images/logo.png';
 
@@ -23,7 +16,7 @@ const Header = () => {
     let history = useHistory();
     const location = useLocation();
 
-    const {user, signin, signout} = useContext(AuthContext);
+    const {user, setUser, setIsLoading} = useContext(AuthContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -40,7 +33,6 @@ const Header = () => {
     useEffect(() => {
         if(location && location.pathname) {
             const paths = location.pathname.split('/');
-            console.log(paths);
             if(paths.length > 2) {
                 setIsHome(false);
             } else {
@@ -58,16 +50,22 @@ const Header = () => {
         history.push(`protected/dashboard`);
     }
 
+    const gotoAdminDashboard = () => {
+        if(history.location.pathname.includes('admin')) return;
+        history.push(`protected/admin`);
+    }
+
     const goToHome = () => {
         history.push('/protected');
     }
 
-    const login = () => {
-        setIsLoginModalOpen(true);
+    const logoutCallback = () => {
+        setUser(null);
+        history.push('/');
     }
 
-    function logout(){
-        signout(() => {});
+    const login = () => {
+        setIsLoginModalOpen(true);
     }
 
     return (
@@ -138,10 +136,12 @@ const Header = () => {
                                     {!user && <MDBDropdownItem onClick={login} >Login</MDBDropdownItem>}
                                     {user && (
                                         <Fragment>
+                                        <MDBDropdownItem>Welcome, {user.f_name}</MDBDropdownItem>
                                             <MDBDropdownItem onClick={goToHome}>Home</MDBDropdownItem>
                                         <MDBDropdownItem onClick={gotoDashboard}>My Dashboard</MDBDropdownItem>
+                                        <MDBDropdownItem onClick={gotoAdminDashboard}>Admin Dashboard</MDBDropdownItem>
                                         <MDBDropdownItem divider />
-                                        <MDBDropdownItem onClick={logout}>Logout</MDBDropdownItem>
+                                        <MDBDropdownItem onClick={() => signout(logoutCallback)}>Logout</MDBDropdownItem>
                                         </Fragment>
                                     )}
                                     
@@ -152,7 +152,7 @@ const Header = () => {
                 </MDBCollapse>
             </MDBNavbar>
             <MDBModal isOpen={isLoginModalOpen} centered>
-                <Login signin={signin} close={() => { setIsLoginModalOpen(false); }} />
+                <Login setUser={setUser} setIsLoading={setIsLoading} close={() => { setIsLoginModalOpen(false); }} />
             </MDBModal>
         </Fragment>
     );

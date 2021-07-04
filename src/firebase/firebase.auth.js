@@ -1,13 +1,16 @@
-import firebase from "firebase/app";
+import firebase from './firebase.config';
 import "firebase/auth";
 import handleApiError from '../util/ErrorHandler';
+import { getUserObject, createUserObject } from './firebase.db';
 
 
-const createUser = (email, password, successCallback) => {
+const createUser = (email, password, userDetails, successCallback) => {
     firebase.auth().createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
         const user = userCredential.user;
-        successCallback(user);
+        if(user) {
+            createUserObject(userDetails, successCallback);
+        }        
     })
     .catch((error) => {
         handleApiError(error);
@@ -17,8 +20,9 @@ const createUser = (email, password, successCallback) => {
 const signInUser = (email, password, successCallback) => {
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
-        const user = userCredential.user;
-        successCallback(user);
+        if(userCredential.user) {
+            getUserObject(email, successCallback);
+        }
     })
     .catch((error) => {
         handleApiError(error);
@@ -44,9 +48,18 @@ const forgetPassword = (email,successCallback , failedCallback) =>{
     });
 }
 
+const signout = (successCallback) => {
+    firebase.auth().signOut().then(() => {
+        successCallback();
+      }).catch((error) => {
+        handleApiError(error);
+      });
+}
+
 export {
     createUser,
     signInUser,
     isUserActive,
-    forgetPassword
+    forgetPassword,
+    signout
 }

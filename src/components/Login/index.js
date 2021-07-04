@@ -1,18 +1,26 @@
 import React, { Fragment, useState } from "react";
-import { MDBModalHeader, MDBModalBody, MDBModalFooter, MDBBtn, MDBInput } from "mdbreact";
-import {createUser} from '../../firebase/firebase.auth';
+import { MDBModalHeader, MDBModalBody, MDBModalFooter, MDBBtn } from "mdbreact";
+import { createUser, signInUser } from '../../firebase/firebase.auth';
+import LoginF from "./LoginF";
+import Register from "./Register";
 
-const Login = ({ signin, close, loginCallback }) => {
+const Login = ({ close, setUser, setIsLoading }) => {
     const [isLogin, setIsLogin] = useState(true);
-    const [userDetails,setUserDetails] = useState({});
 
-    const registerUser = () => {
-        createUser("abcd@gmail.com", "123456", successFn);
-    }
+    const successCallback = (user) => {
+        setUser(user);
+        setIsLoading(false);
+        close();
+    };
 
-    const successFn = (user) => {
-        console.log(user);
-        setUserDetails(user);
+    const loginFn = (email, password) => {
+        setIsLoading(true);
+        signInUser(email, password, successCallback);
+    };
+
+    const registerFn = (email, password, userDetails) => {
+        setIsLoading(true);
+        createUser(email, password, userDetails, successCallback);
     }
 
     return (
@@ -20,39 +28,21 @@ const Login = ({ signin, close, loginCallback }) => {
             <MDBModalHeader>{isLogin ? 'Login' : 'Register'}</MDBModalHeader>
             <MDBModalBody>
                 {isLogin ?
-                    <form>
-                        <div className="grey-text">
-                            <MDBInput label="Type your email" icon="envelope" group type="email" validate error="wrong"
-                                success="right" />
-                            <MDBInput label="Type your password" icon="lock" group type="password" validate />
-                        </div>
-                        <div className="text-center">
-                            <MDBBtn color="elegant" onClick={() => { signin(); close(); }}>Login</MDBBtn>
-                            <MDBBtn color="elegant" type="reset">Reset</MDBBtn>
-                        </div>
+                    <Fragment>
+                        <LoginF login={loginFn} />
                         <div className="text-center">
                             <MDBBtn color="elegant" className="btn-link" onClick={() => { setIsLogin(false) }}>Don't have an account? Sign up!</MDBBtn>
                         </div>
-                    </form>
+                    </Fragment>
+
                     :
-                    <form>
-                        <div className="grey-text">
-                            <MDBInput label="Your name" icon="user" group type="text" validate error="wrong"
-                                success="right" />
-                            <MDBInput label="Your email" icon="envelope" group type="email" validate error="wrong"
-                                success="right" />
-                            <MDBInput label="Your password" icon="lock" group type="password" validate />
-                            <MDBInput label="Confirm your password" icon="exclamation-triangle" group type="password" validate
-                                error="wrong" success="right" />
-                        </div>
-                        <div className="text-center">
-                            <MDBBtn color="elegant" onClick={registerUser}>Register</MDBBtn>
-                            <MDBBtn color="elegant" type="reset">Reset</MDBBtn>
-                        </div>
+                    <Fragment>
+                        <Register register={registerFn} />
                         <div className="text-center">
                             <MDBBtn color="elegant" className="btn-link" onClick={() => { setIsLogin(true) }}>Already have an account? Sign in!</MDBBtn>
                         </div>
-                    </form>}
+                    </Fragment>
+                }
 
             </MDBModalBody>
             <MDBModalFooter>

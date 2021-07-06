@@ -1,8 +1,8 @@
 import React from "react";
-import { MDBBtn, MDBInput } from "mdbreact";
+import { MDBBtn, MDBInput ,MDBIcon} from "mdbreact";
 import { useFormik } from 'formik';
 
-const LoginF = ({ login }) => {
+const LoginF = ({ login , gLogin }) => {
 
     const loginFormik = useFormik({
         initialValues: {
@@ -31,7 +31,12 @@ const LoginF = ({ login }) => {
                 <MDBBtn color="elegant" type="submit">Login</MDBBtn>
                 <MDBBtn color="elegant" type="reset">Reset</MDBBtn>
             </div>
-
+            <div className="text-center mt-2">
+                <MDBBtn onClick={gLogin} gradient="blue" type="submit">
+                    <MDBIcon className="mr-2" fab icon="google" />
+                        Login using Google
+                </MDBBtn>
+            </div>
         </form>
     );
 }

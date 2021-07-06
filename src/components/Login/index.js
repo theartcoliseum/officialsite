@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { MDBModalHeader, MDBModalBody, MDBModalFooter, MDBBtn } from "mdbreact";
 import { createUser, signInUser } from '../../firebase/firebase.auth';
+import { googleSignIn } from '../../firebase/firebase.sso';
 import LoginF from "./LoginF";
 import Register from "./Register";
 
@@ -18,6 +19,10 @@ const Login = ({ close, setUser, setIsLoading }) => {
         signInUser(email, password, successCallback);
     };
 
+    const GoogleLogIn = () =>{
+        googleSignIn(successCallback);
+    }
+
     const registerFn = (email, password, userDetails) => {
         setIsLoading(true);
         createUser(email, password, userDetails, successCallback);
@@ -29,7 +34,7 @@ const Login = ({ close, setUser, setIsLoading }) => {
             <MDBModalBody>
                 {isLogin ?
                     <Fragment>
-                        <LoginF login={loginFn} />
+                        <LoginF gLogin = {GoogleLogIn} login={loginFn} />
                         <div className="text-center">
                             <MDBBtn color="elegant" className="btn-link" onClick={() => { setIsLogin(false) }}>Don't have an account? Sign up!</MDBBtn>
                         </div>

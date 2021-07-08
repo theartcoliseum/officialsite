@@ -5,7 +5,7 @@ import {
   Route
 } from "react-router-dom";
 
-import { AuthContextCreator, AuthContext } from './context/AuthContext';
+import { AuthContextCreator } from './context/AuthContext';
 import { EventContextCreator } from './context/EventContext';
 import PrivateRoute from './PrivateRoute';
 import AuthenticatedLayout from './layouts/AuthenticatedLayout';
@@ -17,15 +17,12 @@ import HomePage from './pages/HomePage';
 
 function App() {
 
-  // const {isLoading} = useContext(AuthContext);
-
   return (
     <div className="App">
       <AuthContextCreator>
         <EventContextCreator>
           <Router>
             <Header />
-            {/* <Spinner show={isLoading} /> */}
             <div>
               <Switch>
                 <Route path="/" exact>

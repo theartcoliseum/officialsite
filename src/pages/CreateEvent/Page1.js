@@ -49,8 +49,6 @@ const Page1 = ({ handleBack, formData, handleNext }) => {
         e_time,
         can_register,
         is_reg_open,
-        poster_link_big,
-        poster_link_small,
         emeeting_link,
     } = createFormik.values;
 
@@ -108,12 +106,14 @@ const Page1 = ({ handleBack, formData, handleNext }) => {
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
-                            <MDBInput label="Big Poster Link" icon="link" group type="text" name="poster_link_big" onChange={createFormik.handleChange}
-                                value={poster_link_big} validate />
+                            <label>Upload Poster for Big Screen</label>
+                            <MDBInput icon="file" group type="file" onChange={(e) => {createFormik.setFieldValue("poster_link_big", e.target.files[0]);}}
+                                validate />
                         </MDBCol>
                         <MDBCol>
-                            <MDBInput label="Small Poster Link" icon="external-link-square-alt" group type="text" validate name="poster_link_small" onChange={createFormik.handleChange}
-                                value={poster_link_small} />
+                            <label>Upload Poster for Small Screen</label>
+                            <MDBInput icon="file" group type="file" onChange={(e) => {createFormik.setFieldValue("poster_link_small", e.target.files[0]);}}
+                             validate />
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>

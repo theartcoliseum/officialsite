@@ -103,4 +103,13 @@
   #error-toast.show {
     visibility: visible; /* Show the snackbar */
   }
+
+  #create-event-modal{
+      .modal-dialog{
+          max-width: 1000px;
+          .stepper-body{
+              padding: 5px 40px;
+          }
+      }
+  }
  

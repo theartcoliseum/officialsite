@@ -1,5 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
-import { signInUser } from '../firebase/firebase.auth';
+import React, { createContext, useState } from "react";
 
 const AuthContext = createContext();
 
@@ -16,17 +15,9 @@ function useProvideAuth() {
     const [user, setUser] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-    }, [user]);
-
-    const signout = () => {
-        setUser(null);
-    };
-
     return {
         user,
         setUser,
-        signout,
         isLoading,
         setIsLoading
     };

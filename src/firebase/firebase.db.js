@@ -9,7 +9,6 @@ const db = firebase.firestore();
 const createUserObject = (userDetails, successCallback) => {
     db.collection("users").add({...userDetails})
     .then((docRef) => {
-        console.log(docRef);
         successCallback({...userDetails, id:docRef.id});
     })
     .catch((error) => {
@@ -32,7 +31,36 @@ const getUserObject = (email, successCallback) => {
     });
 }
 
+// EVENT FUNCTIONS
+const createEvent = ({e_date, e_time, ...eventDetails}, successCallback) => {
+    db.collection("events").add({datetime: firebase.firestore.Timestamp.fromDate(new Date(`${e_date} ${e_time}`)), ...eventDetails})
+    .then((docRef) => {
+        console.log(docRef);
+        successCallback({id:docRef.id,e_date, e_time, ...eventDetails});
+    })
+    .catch((error) => {
+        handleApiError(error);
+    });
+}
+
+const getUpcomingEvents = () => {
+
+};
+
+const getAllPastEvents = () => {
+
+};
+
+const getPastEventsParticipated = () => {
+
+};
+
+const getPastEventsAudience = () => {
+
+};
+
 export {
     createUserObject,
-    getUserObject
+    getUserObject,
+    createEvent
 };

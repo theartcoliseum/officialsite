@@ -1,6 +1,7 @@
 import firebase from './firebase.config';
 import "firebase/firestore";
 import handleApiError from '../util/ErrorHandler';
+import { uploadFile } from './firebase.storage';
 
 const db = firebase.firestore();
 
@@ -32,23 +33,54 @@ const getUserObject = (email, successCallback) => {
 }
 
 // EVENT FUNCTIONS
-const createEvent = ({e_date, e_time, ...eventDetails}, successCallback) => {
-    db.collection("events").add({datetime: firebase.firestore.Timestamp.fromDate(new Date(`${e_date} ${e_time}`)), ...eventDetails})
+const createEvent = async ({e_date, e_time, poster_link_big, name, poster_link_small, ...eventDetails}, successCallback) => {
+    const uploadBigposter = await uploadFile(poster_link_big, `events/${name}/poster_big.jpg`);
+    const uploadSmallposter = await uploadFile(poster_link_small, `events/${name}/poster_small.jpg`);
+
+    db.collection("events").add({datetime: firebase.firestore.Timestamp.fromDate(new Date(`${e_date} ${e_time}`)), 
+    name,
+    poster_link_big: uploadBigposter,
+    poster_link_small: uploadSmallposter,
+    ...eventDetails})
     .then((docRef) => {
-        console.log(docRef);
-        successCallback({id:docRef.id,e_date, e_time, ...eventDetails});
+        successCallback({id:docRef.id,e_date, e_time, poster_link_big: uploadBigposter,
+            poster_link_small: uploadSmallposter, ...eventDetails});
     })
     .catch((error) => {
         handleApiError(error);
     });
 }
 
-const getUpcomingEvents = () => {
-
+const getUpcomingEvents = (successCallback) => {
+    const today = new Date();
+    db.collection("events").where("datetime", ">=", today)
+    .get()
+    .then((querySnapshot) => {
+        let events = [];
+        querySnapshot.forEach((doc) => {
+            events.push({id: doc.id, ...doc.data()});
+        });
+        successCallback(events);
+    })
+    .catch((error) => {
+        handleApiError(error);
+    });
 };
 
-const getAllPastEvents = () => {
-
+const getAllPastEvents = (successCallback) => {
+    const today = new Date();
+    db.collection("events").where("datetime", "<=", today)
+    .get()
+    .then((querySnapshot) => {
+        let events = [];
+        querySnapshot.forEach((doc) => {
+            events.push({id: doc.id, ...doc.data()});
+        });
+        successCallback(events);
+    })
+    .catch((error) => {
+        handleApiError(error);
+    });
 };
 
 const getPastEventsParticipated = () => {
@@ -62,5 +94,7 @@ const getPastEventsAudience = () => {
 export {
     createUserObject,
     getUserObject,
-    createEvent
+    createEvent,
+    getUpcomingEvents,
+    getAllPastEvents
 };

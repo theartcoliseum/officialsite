@@ -9,6 +9,7 @@ import { Link } from 'react-scroll';
 import { AuthContext } from '../../context/AuthContext';
 import { signout } from '../../firebase/firebase.auth';
 import Login from '../Login';
+import Spinner from '../Spinner';
 
 // import logo from '../../assets/images/logo.png';
 
@@ -16,7 +17,7 @@ const Header = () => {
     let history = useHistory();
     const location = useLocation();
 
-    const {user, setUser, setIsLoading} = useContext(AuthContext);
+    const {user, setUser, setIsLoading, isLoading} = useContext(AuthContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
@@ -70,6 +71,7 @@ const Header = () => {
         <Fragment>
             <div id="error-toast">
             </div>
+            {isLoading && <Spinner />}
             <MDBNavbar color="elegant-color-dark" dark expand="md" scrolling fixed="top">
                 <MDBNavbarBrand onClick={goToHome}>
                     {/* <img src={logo} alt="site logo" /> */}

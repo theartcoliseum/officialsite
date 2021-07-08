@@ -27,10 +27,10 @@ const validationSchema = yup.object().shape({
     .required("Event Date is mandatory"),
     poster_link_big: yup
     .string()
-    .required("Please enter poster link"),
+    .required("Please upload poster link"),
     poster_link_small: yup
     .string()
-    .required("Please enter poster link"),
+    .required("Please upload poster link"),
     emeeting_link: yup
     .string()
     .required("E-meeting link is mandatory")
@@ -74,8 +74,6 @@ const Page1 = ({ handleBack, formData, handleNext }) => {
         e_time,
         can_register,
         is_reg_open,
-        poster_link_big,
-        poster_link_small,
         emeeting_link,
     } = createFormik.values;
 
@@ -151,16 +149,18 @@ const Page1 = ({ handleBack, formData, handleNext }) => {
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
-                            <MDBInput label="Big Poster Link" icon="link" group type="text" name="poster_link_big" onChange={createFormik.handleChange}
-                                value={poster_link_big} validate />
-                                <div className="validation-error">
+                            <label>Upload Poster for Big Screen</label>
+                            <MDBInput icon="file" group type="file" onChange={(e) => {createFormik.setFieldValue("poster_link_big", e.target.files[0]);}}
+                                validate />
+                                  <div className="validation-error">
                                     {(createFormik.errors.poster_link_big && createFormik.touched.poster_link_big)? createFormik.errors.poster_link_big : null}
                                 </div>
                         </MDBCol>
                         <MDBCol>
-                            <MDBInput label="Small Poster Link" icon="external-link-square-alt" group type="text" validate name="poster_link_small" onChange={createFormik.handleChange}
-                                value={poster_link_small} />
-                                <div className="validation-error">
+                            <label>Upload Poster for Small Screen</label>
+                            <MDBInput icon="file" group type="file" onChange={(e) => {createFormik.setFieldValue("poster_link_small", e.target.files[0]);}}
+                             validate />
+                               <div className="validation-error">
                                     {(createFormik.errors.poster_link_small && createFormik.touched.poster_link_small)? createFormik.errors.poster_link_small : null}
                                 </div>
                         </MDBCol>

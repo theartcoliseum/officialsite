@@ -47,17 +47,15 @@ const Header = () => {
     }
 
     const gotoDashboard = () => {
-        if(history.location.pathname.includes('dashboard')) return;
-        history.push(`protected/dashboard`);
+        history.replace('/protected/dashboard');
     }
 
     const gotoAdminDashboard = () => {
-        if(history.location.pathname.includes('admin')) return;
-        history.push(`protected/admin`);
+        history.replace('/protected/admin');
     }
 
     const goToHome = () => {
-        history.push('/protected');
+        history.replace('/protected');
     }
 
     const logoutCallback = () => {

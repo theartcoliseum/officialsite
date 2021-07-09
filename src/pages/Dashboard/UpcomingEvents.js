@@ -1,11 +1,13 @@
 import React from "react";
-import { MDBBtn, MDBCard, MDBCardHeader, MDBCardBody, MDBCardText, MDBTable, MDBTableBody, MDBTableHead } from "mdbreact";
+import { MDBCard, MDBCardHeader, MDBCardBody, MDBCardText, MDBTable, MDBTableBody, MDBBtn, MDBTableHead } from "mdbreact";
 
-const UpcomingEvents = () => {
+
+const UpcomingEvents = ({ upcomingEvents, registerEventFn }) => {
+
     const columns = [
         {
             label: 'Date',
-            field: 'date',
+            field: 'datetime',
             sort: 'asc'
         },
         {
@@ -15,7 +17,12 @@ const UpcomingEvents = () => {
         },
         {
             label: 'Platform',
-            field: 'platform',
+            field: 'type',
+            sort: 'asc'
+        },
+        {
+            label: 'Paid/Unpaid',
+            field: 'payment_status',
             sort: 'asc'
         },
         {
@@ -23,27 +30,6 @@ const UpcomingEvents = () => {
             field: 'register',
             sort: 'asc'
         }
-    ];
-
-    const rows_outline_btn = [
-        {
-            'date': '16-07-2021',
-            'name': 'Virtual Open Mic Even',
-            'platform': 'Zoom',
-            'register': <MDBBtn color="elegant" size="sm">Register</MDBBtn>
-        },
-        {
-            'date': '08-07-2021',
-            'name': 'Facebook Live',
-            'platform': 'Facebook',
-            'register': <MDBBtn color="elegant" size="sm">View Details</MDBBtn>
-        },
-        {
-            'date': '07-07-2021',
-            'name': 'Instagram Live',
-            'platform': 'Instagram',
-            'register': <MDBBtn color="elegant" size="sm">View Details</MDBBtn>
-        },
     ];
     return (
         <MDBCard>
@@ -54,7 +40,17 @@ const UpcomingEvents = () => {
                 <MDBCardText>
                     <MDBTable btn responsive scrollY striped sorting="true">
                         <MDBTableHead columns={columns} />
-                        <MDBTableBody rows={rows_outline_btn} />
+                        <MDBTableBody>
+                            {upcomingEvents && upcomingEvents.map((event) => (
+                                <tr>
+                                    <td>{event.datetime}</td>
+                                    <td>{event.name}</td>
+                                    <td>{event.type}</td>
+                                    <td>{event.payment_status}</td>
+                            <td>{event.can_register && <MDBBtn color="elegant" size="sm" disabled={!event.is_reg_open} onClick={() => {registerEventFn(event.eventObj)}}>Register</MDBBtn>}</td>
+                                </tr>
+                            ))}
+                        </MDBTableBody>
                     </MDBTable>
                 </MDBCardText>
             </MDBCardBody>

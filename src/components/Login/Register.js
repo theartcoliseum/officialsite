@@ -12,7 +12,8 @@ const Register = ({ register }) => {
             mobile: '',
             city: '',
             password: '',
-            c_password: ''
+            c_password: '',
+            insta: ''
         },
         onSubmit: ({
             f_name,
@@ -21,10 +22,11 @@ const Register = ({ register }) => {
             mobile,
             city,
             password,
-            c_password
+            c_password,
+            insta
         }) => {
             if (password === c_password) {
-                register(email, password, { f_name, l_name, email, mobile, city, roles: ['USER'] });
+                register(email, password, { f_name, l_name, email, mobile, city, roles: ['USER'], insta });
             }
         },
     });
@@ -36,7 +38,8 @@ const Register = ({ register }) => {
         mobile,
         city,
         password,
-        c_password
+        c_password,
+        insta
     } = registerFormik.values;
 
     return (
@@ -66,6 +69,10 @@ const Register = ({ register }) => {
                     <MDBCol>
                         <MDBInput label="City" icon="city" group type="text" validate name="city" onChange={registerFormik.handleChange}
                             value={city} />
+                    </MDBCol>
+                    <MDBCol>
+                        <MDBInput label="Instagram Id" icon="link" group type="text" validate name="insta" onChange={registerFormik.handleChange}
+                            value={insta} />
                     </MDBCol>
                 </MDBRow>
                 <MDBRow>

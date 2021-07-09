@@ -18,7 +18,8 @@ function useEventDetailsHook() {
         upcomingEvents: [],
         pastAllEvents: [],
         upcomingParticipatingEvents: [],
-        upcomingAttendingEvents: []
+        upcomingAttendingEvents: [],
+        eventsLoaded: false
     });
 
     useEffect(() => {

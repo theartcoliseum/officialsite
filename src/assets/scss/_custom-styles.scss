@@ -113,6 +113,15 @@
       }
   }
 
+  #register-event-modal{
+    .modal-dialog{
+        max-width: 1000px;
+        .stepper-body{
+            padding: 5px 40px;
+        }
+    }
+}
+
   .overlay {
     position: fixed;
     width: 100%;

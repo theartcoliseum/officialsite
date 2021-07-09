@@ -53,7 +53,7 @@ const createEvent = async ({e_date, e_time, poster_link_big, name, poster_link_s
 
 const getUpcomingEvents = (successCallback) => {
     const today = new Date();
-    db.collection("events").where("datetime", ">=", today)
+    db.collection("events").where("datetime", ">", today)
     .get()
     .then((querySnapshot) => {
         let events = [];

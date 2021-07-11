@@ -1,11 +1,11 @@
 import React from "react";
 import { MDBBtn, MDBCard, MDBCardHeader, MDBCardBody, MDBCardText, MDBTable, MDBTableBody, MDBTableHead } from "mdbreact";
 
-const PastAttendedEvents = () => {
+const PastAttendedEvents = ({ pastEvents }) => {
     const columns = [
         {
             label: 'Date',
-            field: 'date',
+            field: 'datetime',
             sort: 'asc'
         },
         {
@@ -15,36 +15,16 @@ const PastAttendedEvents = () => {
         },
         {
             label: 'Platform',
-            field: 'platform',
+            field: 'type',
             sort: 'asc'
         },
         {
             label: 'Register',
-            field: 'register',
+            field: '',
             sort: 'asc'
         }
     ];
 
-    const rows_outline_btn = [
-        {
-            'date': '16-06-2021',
-            'name': 'Virtual Open Mic Even',
-            'platform': 'Zoom',
-            'register': <MDBBtn color="elegant" size="sm">Download Certificate</MDBBtn>
-        },
-        {
-            'date': '01-06-2021',
-            'name': 'Virtual Open Mic Even',
-            'platform': 'Zoom',
-            'register': <MDBBtn color="elegant" size="sm">Download Certificate</MDBBtn>
-        },
-        {
-            'date': '16-05-2021',
-            'name': 'Virtual Open Mic Even',
-            'platform': 'Zoom',
-            'register': <MDBBtn color="elegant" size="sm">Download Certificate</MDBBtn>
-        }
-    ];
     return (
         <MDBCard>
             <MDBCardHeader tag="h3">
@@ -52,9 +32,25 @@ const PastAttendedEvents = () => {
               </MDBCardHeader>
             <MDBCardBody className="table-container">
                 <MDBCardText>
-                <MDBTable btn responsive scrollY striped sorting="true">
+                    <MDBTable btn responsive scrollY striped sorting="true">
                         <MDBTableHead columns={columns} />
-                        <MDBTableBody rows={rows_outline_btn} />
+                        <MDBTableBody>
+                            {(!pastEvents || pastEvents.length === 0) && (
+                                <tr>
+                                    <td colSpan="4">
+                                        No Events attended previously
+                                    </td>
+                                </tr>
+                            )}
+                            {pastEvents && pastEvents.map((event) => {
+                                <tr>
+                                    <td>{event.datetime}</td>
+                                    <td>{event.name}</td>
+                                    <td>{event.type}</td>
+                                    <td><MDBBtn color="elegant" size="sm">Download Certificate</MDBBtn></td>
+                                </tr>
+                            })}
+                        </MDBTableBody>
                     </MDBTable>
                 </MDBCardText>
             </MDBCardBody>

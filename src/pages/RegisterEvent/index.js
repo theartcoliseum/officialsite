@@ -11,8 +11,9 @@ import Page1 from "./Page1";
 import Page2 from "./Page2";
 import Page3 from "./Page3";
 
-import { createEvent } from '../../firebase/firebase.db';
+import { createParticipation } from '../../firebase/firebase.db';
 import { EventContext } from '../../context/EventContext';
+import { AuthContext } from "../../context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -40,14 +41,15 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
         user: `/users/${userDetails.id}`,
     });
     const { events, setEvents } = useContext(EventContext);
+    const { setIsLoading } = useContext(AuthContext);
     // Stepper Code
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
 
-    // useEffect(() => {
-    //     console.log(createEventForm)
-    // }, [createEventForm]);
+    useEffect(() => {
+        console.log(createEventForm)
+    }, [createEventForm]);
 
     const handleNext = (res) => {
         setCreateEventForm({ ...createEventForm, ...res });
@@ -60,13 +62,16 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
     };
 
     const handleFinish = (res) => {
-        console.log(createEventForm);
-        console.log(res);
-        console.log({...createEventForm, ...res});
-        // createEvent({ e_date: e_date._i, e_time: new Date(e_time._i).toLocaleTimeString("en-US"), ...finalValues }, (createdEvent) => {
-        //     const upcoming = [...events.upcomingEvents, createdEvent];
-        //     setEvents({ ...events, upcomingEvents: upcoming });
-        // });
+        setIsLoading(true);
+        createParticipation({...createEventForm, ...res}, (registration) => {
+            const event = {...eventDetails, participation: registration};
+            const upcomingEvents = [...events.upcomingEvents];
+            const eventIndex = upcomingEvents.findIndex((i) => i.id === event.id);
+            upcomingEvents.splice(eventIndex, 1);
+            upcomingEvents.push(event);
+            setEvents({ ...events, upcomingEvents: upcomingEvents });
+            setIsLoading(false);
+        });
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }

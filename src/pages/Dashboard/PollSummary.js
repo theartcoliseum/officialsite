@@ -25,7 +25,7 @@ const PollSummary = () => {
     return (
         <MDBCard>
             <MDBCardHeader tag="h3">
-                Your Event Summary
+                Your Performance Summary
               </MDBCardHeader>
             <MDBCardBody>
                 <MDBCardText>

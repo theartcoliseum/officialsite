@@ -17,10 +17,11 @@ const Dashboard = () => {
   const { events } = useContext(EventContext);
   const { user } = useContext(AuthContext);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [pastEvents, setPastEvents] = useState([]);
 
   useEffect(() => {
-    if (events && events.upcomingEvents && events.upcomingEvents.length > 0) {
-      let tempEvents = events.upcomingEvents.map((event) => {
+    if (events && events.upcomingEventsWithParticipation && events.upcomingEventsWithParticipation.length > 0) {
+      let tempEvents = events.upcomingEventsWithParticipation.map((event) => {
         const formattedDate = new Date(event.datetime.seconds * 1000).toUTCString();
         return {
           datetime: formattedDate,
@@ -29,6 +30,7 @@ const Dashboard = () => {
           payment_status: event.payment_enabled ? 'Paid' : 'Free',
           can_register: event.can_register,
           is_reg_open: event.is_reg_open,
+          participant: event.participant ? true : false,
           eventObj: event
         };
       });
@@ -37,7 +39,25 @@ const Dashboard = () => {
       const tempDate = new Date(tempEvents[0].datetime);
       setNextDate(tempDate);
     }
-  }, [events.upcomingEvents]);
+  }, [events.upcomingEventsWithParticipation]);
+
+  useEffect(() => {
+    if (events && events.pastEventsParticipated && events.pastEventsParticipated.length > 0) {
+      let tempEvents = events.pastEventsParticipated.map((event) => {
+        const formattedDate = new Date(event.datetime.seconds * 1000).toUTCString();
+        return {
+          datetime: formattedDate,
+          name: event.name,
+          type: event.type,
+          eventObj: event
+        };
+      });
+      tempEvents = tempEvents.sort((a, b) => a.dateTime > b.dateTime);
+      setPastEvents(tempEvents);
+      const tempDate = new Date(tempEvents[0].datetime);
+      setNextDate(tempDate);
+    }
+  }, [events.pastEventsParticipated]);
 
   const registerEventFn = (event) => {
     setRegisterModalData(event);
@@ -64,7 +84,7 @@ const Dashboard = () => {
             <UpcomingEvents upcomingEvents={upcomingEvents} registerEventFn={registerEventFn} />
           </MDBCol>
           <MDBCol lg="6" md="6" className="mb-lg-0 mb-5">
-            <PastAttendedEvents />
+            <PastAttendedEvents pastEvents={pastEvents} />
           </MDBCol>
         </MDBRow>
       </MDBContainer>

@@ -66,12 +66,12 @@ const Page1 = ({ handleBack, eventDetails, handleNext, userDetails }) => {
             </MDBRow>
             
             <MDBRow>
-                <MDBBtn color="elegant" disabled={true} onClick={handleBack}>Back</MDBBtn>
+                <MDBBtn color="elegant" disabled={true} onClick={() =>handleBack()}>Back</MDBBtn>
 
                 <MDBBtn
                     variant="contained"
                     color="elegant"
-                    onClick={handleNext}
+                    onClick={() => handleNext()}
                 >Next</MDBBtn>
             </MDBRow>
         </MDBContainer>

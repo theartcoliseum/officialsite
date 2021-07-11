@@ -2,7 +2,7 @@ import firebase from './firebase.config';
 import "firebase/auth";
 import "firebase/firestore";
 import handleApiError from '../util/ErrorHandler';
-import { getUserObject, createUserObject, isExistngUser } from './firebase.db';
+import { loginRequestBundle, createUserObject, isExistngUser } from './firebase.db';
 
 const db = firebase.firestore();
 
@@ -15,7 +15,7 @@ const googleSignIn = (successCallback) =>{
         db.collection("users").where("email", "==", result.user.email)
         .get().then((querySnapshot) => {
             if(querySnapshot['docs'].length>0){
-                getUserObject(result.user.email,successCallback);
+                loginRequestBundle(result.user.email,successCallback);
             }
             else{
                 const userObject = {

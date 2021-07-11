@@ -1,15 +1,26 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { MDBModalHeader, MDBModalBody, MDBModalFooter, MDBBtn } from "mdbreact";
 import { createUser, signInUser } from '../../firebase/firebase.auth';
 import { googleSignIn } from '../../firebase/firebase.sso';
 import LoginF from "./LoginF";
 import Register from "./Register";
+import { EventContext } from '../../context/EventContext';
 
 const Login = ({ close, setUser, setIsLoading }) => {
+    const { events, setEvents } = useContext(EventContext);
     const [isLogin, setIsLogin] = useState(true);
 
-    const successCallback = (user) => {
+    const successCallback = ({user, events}) => {
         setUser(user);
+        updateEventsContext(events);
+    };
+
+    const updateEventsContext = (eventsGot) => {
+        const eventsObj = {};
+        eventsGot.forEach((i) => {
+            events[i.label] = i.eventObj;
+        })
+        setEvents({...events, ...eventsObj});
         setIsLoading(false);
         close();
     };

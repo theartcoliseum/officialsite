@@ -13,7 +13,8 @@ const Page3 = ({ handleBack, formData, handleNext }) => {
     const createFormik = useFormik({
         initialValues: {
             perf_type: formData.perf_type || '',
-            audition_link: formData.audition_link || false
+            audition_link: formData.audition_link || false,
+            audition_url: formData.audition_url || false
         },
         onSubmit: (values) => {
             if (values.callback === 'next') {

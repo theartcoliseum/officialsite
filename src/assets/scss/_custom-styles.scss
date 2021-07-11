@@ -85,6 +85,17 @@
     }
 }
 
+#manage {
+    .form-paper{
+        padding: 30px;
+
+        .poster-preview{
+            height: 100%;
+            width: 50%;
+        }
+    }
+}
+
 .validation-error{
     font-size: 12px;
     color: lightcoral;

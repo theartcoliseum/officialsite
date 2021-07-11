@@ -1,8 +1,8 @@
 import React from "react";
-import { MDBCarousel, MDBCarouselInner, MDBCarouselItem, MDBView, MDBContainer } from
+import { MDBCarousel, MDBCarouselInner, MDBCarouselItem, MDBView, MDBContainer, MDBBtn } from
   "mdbreact";
 
-const Events = () => {
+const Events = ({eventlist}) => {
   return (
     <div className="parallax-section" id="events">
       <MDBContainer>
@@ -12,40 +12,24 @@ const Events = () => {
       <MDBContainer>
         <MDBCarousel
           activeItem={1}
-          length={3}
+          length={eventlist.length}
           showControls={true}
           showIndicators={true}
           className="z-depth-1"
           slide
         >
           <MDBCarouselInner>
-            <MDBCarouselItem itemId="1">
+            {eventlist && eventlist.map(({name, poster_link_big}, index) => (
+              <MDBCarouselItem itemId={index + 1}>
               <MDBView>
                 <img
                   className="d-block w-100 img-fluid"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(130).jpg"
-                  alt="First slide"
+                  src={poster_link_big}
+                  alt={name}
                 />
               </MDBView>
             </MDBCarouselItem>
-            <MDBCarouselItem itemId="2">
-              <MDBView>
-                <img
-                  className="d-block w-100 img-fluid"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(129).jpg"
-                  alt="Second slide"
-                />
-              </MDBView>
-            </MDBCarouselItem>
-            <MDBCarouselItem itemId="3">
-              <MDBView>
-                <img
-                  className="d-block w-100 img-fluid"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(70).jpg"
-                  alt="Third slide"
-                />
-              </MDBView>
-            </MDBCarouselItem>
+            ))}
           </MDBCarouselInner>
         </MDBCarousel>
       </MDBContainer>

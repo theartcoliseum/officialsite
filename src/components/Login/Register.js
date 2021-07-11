@@ -37,7 +37,8 @@ const Register = ({ register }) => {
             mobile: '',
             city: '',
             password: '',
-            c_password: ''
+            c_password: '',
+            insta: ''
         },
         validationSchema,
         onSubmit: ({
@@ -47,10 +48,11 @@ const Register = ({ register }) => {
             mobile,
             city,
             password,
-            c_password
+            c_password,
+            insta
         }) => {
             if (password === c_password) {
-                register(email, password, { f_name, l_name, email, mobile, city, roles: ['USER'] });
+                register(email, password, { f_name, l_name, email, mobile, city, roles: ['USER'], insta });
             }
         },
     });
@@ -62,7 +64,8 @@ const Register = ({ register }) => {
         mobile,
         city,
         password,
-        c_password
+        c_password,
+        insta
     } = registerFormik.values;
 
     return (

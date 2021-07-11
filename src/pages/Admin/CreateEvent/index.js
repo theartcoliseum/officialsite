@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext, useEffect } from "react";
+import React, { Fragment, useState, useContext } from "react";
 import { makeStyles } from "@material-ui/styles";
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -11,8 +11,9 @@ import Page1 from "./Page1";
 import Page2 from "./Page2";
 import Page3 from "./Page3";
 
-import { createEvent } from '../../firebase/firebase.db';
-import { EventContext } from '../../context/EventContext';
+import { createEvent } from '../../../firebase/firebase.db';
+import { EventContext } from '../../../context/EventContext';
+import { AuthContext } from "../../../context/AuthContext";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,14 +38,11 @@ const CreateEvent = ({ close }) => {
 
     const [createEventForm, setCreateEventForm] = useState({});
     const { events, setEvents } = useContext(EventContext);
+    const { setIsLoading } = useContext(AuthContext);
     // Stepper Code
     const classes = useStyles();
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
-
-    useEffect(() => {
-        console.log(createEventForm)
-    }, [createEventForm]);
 
     const handleNext = (res) => {
         setCreateEventForm({ ...createEventForm, ...res });
@@ -57,10 +55,12 @@ const CreateEvent = ({ close }) => {
     };
 
     const handleFinish = (res) => {
+        setIsLoading(true);
         const { callback, e_date, e_time, ...finalValues } = { ...createEventForm, ...res };
         createEvent({ e_date: e_date._i, e_time: new Date(e_time._i).toLocaleTimeString("en-US"), ...finalValues }, (createdEvent) => {
             const upcoming = [...events.upcomingEvents, createdEvent];
             setEvents({ ...events, upcomingEvents: upcoming });
+            setIsLoading(false);
         });
 
         setActiveStep((prevActiveStep) => prevActiveStep + 1);

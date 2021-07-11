@@ -1,8 +1,19 @@
 import React from "react";
+import { useHistory } from 'react-router-dom';
 import { MDBCard, MDBCardHeader, MDBCardBody, MDBCardText, MDBTable, MDBTableBody, MDBBtn, MDBTableHead } from "mdbreact";
 
 
-const UpcomingEvents = ({ upcomingEvents, registerEventFn }) => {
+const UpcomingEvents = ({ upcomingEvents }) => {
+    let history = useHistory();
+
+    const manageEvent = (eventObj) => {
+        history.push({
+            pathname: '/protected/admin/manage',
+            state: {
+                event: eventObj
+            }
+        });
+    }
 
     const columns = [
         {
@@ -26,11 +37,12 @@ const UpcomingEvents = ({ upcomingEvents, registerEventFn }) => {
             sort: 'asc'
         },
         {
-            label: 'Register',
-            field: 'register',
+            label: 'Manage Event',
+            field: '',
             sort: 'asc'
         }
     ];
+
     return (
         <MDBCard>
             <MDBCardHeader tag="h3">
@@ -54,7 +66,7 @@ const UpcomingEvents = ({ upcomingEvents, registerEventFn }) => {
                                     <td>{event.name}</td>
                                     <td>{event.type}</td>
                                     <td>{event.payment_status}</td>
-                            <td>{event.can_register && <MDBBtn color="elegant" size="sm" disabled={!event.is_reg_open || event.participant} onClick={() => {registerEventFn(event.eventObj)}}>{event.participant? 'Registered': 'Register'}</MDBBtn>}</td>
+                            <td><MDBBtn color="elegant" size="sm" onClick={() => {manageEvent(event.eventObj)}}>Manage Event</MDBBtn></td>
                                 </tr>
                             ))}
                         </MDBTableBody>

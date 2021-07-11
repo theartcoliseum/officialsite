@@ -1,7 +1,7 @@
 import firebase from './firebase.config';
 import "firebase/auth";
 import handleApiError from '../util/ErrorHandler';
-import { getUserObject, createUserObject } from './firebase.db';
+import { loginRequestBundle, createUserObject } from './firebase.db';
 
 
 const createUser = (email, password, userDetails, successCallback) => {
@@ -21,7 +21,7 @@ const signInUser = (email, password, successCallback) => {
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then((userCredential) => {
         if(userCredential.user) {
-            getUserObject(email, successCallback);
+            loginRequestBundle(email, successCallback);
         }
     })
     .catch((error) => {

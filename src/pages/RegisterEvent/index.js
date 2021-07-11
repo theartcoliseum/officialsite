@@ -1,0 +1,129 @@
+import React, { Fragment, useState, useContext, useEffect } from "react";
+import { makeStyles } from "@material-ui/styles";
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import Typography from '@material-ui/core/Typography';
+
+
+import { MDBModalHeader, MDBModalBody, MDBModalFooter, MDBBtn } from "mdbreact";
+import Page1 from "./Page1";
+import Page2 from "./Page2";
+import Page3 from "./Page3";
+
+import { createParticipation } from '../../firebase/firebase.db';
+import { EventContext } from '../../context/EventContext';
+import { AuthContext } from "../../context/AuthContext";
+
+const useStyles = makeStyles((theme) => ({
+    root: {
+        padding: 10,
+    },
+    button: {
+        marginRight: 10,
+    },
+    instructions: {
+        marginTop: 2,
+        marginBottom: 5,
+    },
+}));
+
+function getSteps() {
+    return [{ title: 'Event Details', optional: false },
+    { title: 'Terms and Conditions', optional: false },
+    { title: 'Audition', optional: false }];
+}
+
+const RegisterEvent = ({ close, eventDetails, userDetails }) => {
+
+    const [createEventForm, setCreateEventForm] = useState({
+        event: `/events/${eventDetails.id}`,
+        user: `/users/${userDetails.id}`,
+    });
+    const { events, setEvents } = useContext(EventContext);
+    const { setIsLoading } = useContext(AuthContext);
+    // Stepper Code
+    const classes = useStyles();
+    const [activeStep, setActiveStep] = useState(0);
+    const steps = getSteps();
+
+    useEffect(() => {
+        console.log(createEventForm)
+    }, [createEventForm]);
+
+    const handleNext = (res) => {
+        setCreateEventForm({ ...createEventForm, ...res });
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    };
+
+    const handleBack = (res) => {
+        setCreateEventForm({ ...createEventForm, ...res });
+        setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    const handleFinish = (res) => {
+        setIsLoading(true);
+        createParticipation({...createEventForm, ...res}, (registration) => {
+            const event = {...eventDetails, participation: registration};
+            const upcomingEvents = [...events.upcomingEvents];
+            const eventIndex = upcomingEvents.findIndex((i) => i.id === event.id);
+            upcomingEvents.splice(eventIndex, 1);
+            upcomingEvents.push(event);
+            setEvents({ ...events, upcomingEvents: upcomingEvents });
+            setIsLoading(false);
+        });
+
+        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
+
+    function getStepContent(step) {
+        switch (step) {
+            case 0:
+                return <Page1 eventDetails={eventDetails} userDetails={userDetails} handleNext={handleNext} handleBack={handleBack} formData={createEventForm} />;
+            case 1:
+                return <Page2 eventDetails={eventDetails} handleNext={handleNext} handleBack={handleBack} formData={createEventForm} />;
+            case 2:
+                return <Page3 handleNext={handleFinish} handleBack={handleBack} formData={createEventForm} />;
+            default:
+                return 'Unknown step';
+        }
+    }
+    // Stepper Code
+
+    return (
+        <Fragment>
+            <MDBModalHeader>Register for Participation</MDBModalHeader>
+            <MDBModalBody >
+                <Stepper activeStep={activeStep}>
+                    {steps.map(({ title, optional }, index) => {
+                        const stepProps = {};
+                        const labelProps = {};
+                        return (
+                            <Step key={title} {...stepProps}>
+                                <StepLabel {...labelProps}>{title}</StepLabel>
+                            </Step>
+                        );
+                    })}
+                </Stepper>
+                <div className="stepper-body">
+                    {activeStep === steps.length ? (
+                        <div>
+                            <Typography className={classes.instructions}>
+                                Event Registered Successfully!
+            </Typography>
+                        </div>
+                    ) : (
+                            <div>
+                                <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
+                            </div>
+                        )}
+                </div>
+            </MDBModalBody>
+            <MDBModalFooter>
+                <MDBBtn color="elegant" outline onClick={close}>Close</MDBBtn>
+            </MDBModalFooter>
+        </Fragment>
+    );
+}
+
+export default RegisterEvent;

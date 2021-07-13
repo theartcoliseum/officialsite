@@ -35,7 +35,7 @@ const Events = ({eventlist}) => {
   }
   return (
     <div className="parallax-section" id="events">
-      <MDBContainer>
+      <MDBContainer className="homepage-title">
         <h1>The Art Coliseum</h1>
         <h4>Family of Artists</h4>
       </MDBContainer>

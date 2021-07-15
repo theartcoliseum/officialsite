@@ -27,9 +27,12 @@ const Header = () => {
         if(user) {
             history.push(`/protected`);
         } else {
+            //Logout on page refresh
+            signout(logoutCallback);
             history.push(`/`);
         }
     }, [user]);
+
 
     useEffect(() => {
         if(location && location.pathname) {
@@ -136,7 +139,7 @@ const Header = () => {
                                     {!user && <MDBDropdownItem onClick={login} >Login</MDBDropdownItem>}
                                     {user && (
                                         <Fragment>
-                                        <MDBDropdownItem>Welcome, {user.f_name}</MDBDropdownItem>
+                                        <MDBDropdownItem className="pointer-none">Welcome, {user.f_name}</MDBDropdownItem>
                                             <MDBDropdownItem onClick={goToHome}>Home</MDBDropdownItem>
                                         <MDBDropdownItem onClick={gotoDashboard}>My Dashboard</MDBDropdownItem>
                                         <MDBDropdownItem onClick={gotoAdminDashboard}>Admin Dashboard</MDBDropdownItem>

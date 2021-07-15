@@ -163,6 +163,19 @@ const getPastEventsAudience = () => {
 
 };
 
+const updateEvent = (eventDetails, successCallback) => {
+    const {id, datetime, ...details} = eventDetails;
+    const eventObj = {datetime: firebase.firestore.Timestamp.fromDate(new Date(datetime)),
+        ...details};
+    db.collection("events").doc(id).update(eventObj).then(() =>
+        {
+            console.log('Event Updated Successfully');
+            successCallback(eventDetails);
+        }).catch((error) => {
+            handleApiError(error);
+        });
+}
+
 // Participation Functions
 // EVENT FUNCTIONS
 const createParticipation = async ({audition_link, audition_url,user, event, ...participationDetails}, successCallback) => {
@@ -208,11 +221,20 @@ const loginRequestBundle = (email, successCallback) => {
     });
 };
 
+const isDateValid = (date) => {
+    if(date instanceof Date) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 export {
     createUserObject,
     createEvent,
     getUpcomingEvents,
     createParticipation,
     loginRequestBundle,
-    getUpcomingEventsWithParticipation
+    getUpcomingEventsWithParticipation,
+    updateEvent
 };

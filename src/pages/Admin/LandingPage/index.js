@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBModal } from "mdbreact";
 import CreateEvent from '../CreateEvent';
 import UpcomingEvents from "./upcomingEvents";
-import { AuthContext } from "../../../context/AuthContext";
 import { EventContext } from '../../../context/EventContext';
 
 
@@ -11,7 +10,6 @@ const AdminLanding = () => {
     const [upcomingEvents, setUpcomingEvents] = useState([]);
 
     const { events } = useContext(EventContext);
-    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         if (events && events.upcomingEventsWithParticipation && events.upcomingEventsWithParticipation.length > 0) {

@@ -6,45 +6,55 @@ const Page1 = ({ handleBack, eventDetails, handleNext, userDetails }) => {
 
     return (
         <MDBContainer>
-            <h2>Event Details</h2>
-            <MDBRow>
+            <h2 className="register-pg-title">Event Details</h2>
+            <br/>
+            <MDBRow className="text-center">
                 <MDBCol>
-                    Event Date and Time
-                </MDBCol>
-                <MDBCol>
-                    {new Date(eventDetails.datetime.seconds * 1000).toUTCString()}
-                </MDBCol>
-                <MDBCol>
-                    Event Name
-                </MDBCol>
-                <MDBCol>
-                    {eventDetails.name}
+                    <h1 className="event-name">{eventDetails.name}</h1>
                 </MDBCol>
             </MDBRow>
             <MDBRow>
                 <MDBCol>
-                    Event Platform
+                    <span className="event-title-bold">Event Date</span>
+                </MDBCol>
+                <MDBCol>
+                {/* {new Date(eventDetails.datetime.seconds * 1000).toUTCString()} */}
+                12th June,2021.
+                </MDBCol>
+                <MDBCol>
+                <span className="event-title-bold">Event Time</span>
+                </MDBCol>
+                <MDBCol>
+                    {/* {new Date(eventDetails.datetime.seconds * 1000).toUTCString()} */}
+                    11:11 AM
+                </MDBCol>
+                
+            </MDBRow>
+            <MDBRow>
+                <MDBCol>
+                <span className="event-title-bold">Event Platform</span>
                 </MDBCol>
                 <MDBCol>
                     {eventDetails.type}
                 </MDBCol>
                 <MDBCol>
-                    Event Payment
+                <span className="event-title-bold">Event Payment</span>
                 </MDBCol>
                 <MDBCol>
                     {eventDetails.payment_enabled ? 'Paid' : 'Free'}
                 </MDBCol>
             </MDBRow>
-            <h2>User Details</h2>
-            <MDBRow>
+            <br/>
+            <h2  className="register-pg-title">User Details</h2>
+            <MDBRow className="mt-4">
                 <MDBCol>
-                    User Name
+                <span className="event-title-bold">Name</span>
                 </MDBCol>
                 <MDBCol>
                     {userDetails.f_name} {userDetails.l_name}
                 </MDBCol>
                 <MDBCol>
-                    Email
+                <span className="event-title-bold">Email</span>
                 </MDBCol>
                 <MDBCol>
                     {userDetails.email}
@@ -52,13 +62,13 @@ const Page1 = ({ handleBack, eventDetails, handleNext, userDetails }) => {
             </MDBRow>
             <MDBRow>
                 <MDBCol>
-                    Mobile
+                <span className="event-title-bold">Mobile No.</span>
                 </MDBCol>
                 <MDBCol>
                     {userDetails.mobile}
                 </MDBCol>
                 <MDBCol>
-                    City
+                <span className="event-title-bold">City</span>
                 </MDBCol>
                 <MDBCol>
                     {userDetails.city}

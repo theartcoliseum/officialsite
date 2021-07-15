@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useContext } from "react";
 import { MDBModalHeader, MDBModalBody, MDBModalFooter, MDBBtn } from "mdbreact";
 import { createUser, signInUser } from '../../firebase/firebase.auth';
-import { googleSignIn } from '../../firebase/firebase.sso';
+import { googleSignIn , facebookSignIn, twitterSignIn , appleSignIn } from '../../firebase/firebase.sso';
 import LoginF from "./LoginF";
 import Register from "./Register";
 import { EventContext } from '../../context/EventContext';
@@ -34,6 +34,18 @@ const Login = ({ close, setUser, setIsLoading }) => {
         googleSignIn(successCallback);
     }
 
+    const FacebookLogIn = () =>{
+        facebookSignIn(successCallback);
+    }
+
+    const AppleLogIn = () =>{
+        appleSignIn();
+    }
+
+    const TwitterLogIn = () =>{
+        twitterSignIn(successCallback);
+    }
+
     const registerFn = (email, password, userDetails) => {
         setIsLoading(true);
         createUser(email, password, userDetails, successCallback);
@@ -45,7 +57,12 @@ const Login = ({ close, setUser, setIsLoading }) => {
             <MDBModalBody>
                 {isLogin ?
                     <Fragment>
-                        <LoginF gLogin = {GoogleLogIn} login={loginFn} />
+                        <LoginF gLogin = {GoogleLogIn}
+                         login={loginFn}
+                         fLogin={FacebookLogIn}
+                         aLogin={AppleLogIn}
+                         tLogin={TwitterLogIn}
+                        />
                         <div className="text-center">
                             <MDBBtn color="elegant" className="btn-link" onClick={() => { setIsLogin(false) }}>Don't have an account? Sign up!</MDBBtn>
                         </div>

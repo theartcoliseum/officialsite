@@ -158,4 +158,24 @@
         left: 50%;
     }
   }
- 
+  .pointer-none{
+      pointer-events: none;
+  }
+  .event-name{
+      color: #64b5f6 !important ;
+  }
+  .register-pg-title{
+    text-decoration: underline;
+    font-size: 24px !important;
+  }
+  .event-title-bold{
+      font-weight: bold;
+      font-size: 16px;
+      color:#45526e   
+  }
+  @media only screen and (max-width: 320px) {
+    .homepage-title{
+        margin-top: 35px !important;
+        max-width: none !important;
+    }
+}

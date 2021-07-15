@@ -12,7 +12,7 @@ const validationSchema = yup.object().shape({
     .required("Password is mandatory"),
 });
 
-const LoginF = ({ login , gLogin }) => {
+const LoginF = ({ login , gLogin , fLogin, aLogin, tLogin }) => {
 
     const {handleChange,handleSubmit,values,errors,touched} = useFormik({
         initialValues: {
@@ -46,15 +46,18 @@ const LoginF = ({ login , gLogin }) => {
                         {(errors.password && touched.password)? errors.password : null}
                     </div>
             </div>
-            <div className="text-center mt-5">
+            <div className="text-center mt-4">
                 <MDBBtn color="elegant" type="submit">Login</MDBBtn>
                 <MDBBtn color="elegant" type="reset">Reset</MDBBtn>
             </div>
+            <div className="text-center mt-3">
+                Or Login using
+            </div>
             <div className="text-center mt-2">
-                <MDBBtn onClick={gLogin} gradient="blue" type="submit">
-                    <MDBIcon className="mr-2" fab icon="google" />
-                        Login using Google
-                </MDBBtn>
+                <MDBIcon title="Google" onClick={gLogin} className="mr-3 ml-1" fab icon="google" />
+                <MDBIcon title="Facebook" onClick={fLogin} className="mr-3" fab icon="facebook" />
+                <MDBIcon title="Apple" onClick={aLogin} className="mr-3" fab icon="apple" />
+                <MDBIcon title="Twitter" onClick={tLogin} className="" fab icon="twitter" />
             </div>
         </form>
     );

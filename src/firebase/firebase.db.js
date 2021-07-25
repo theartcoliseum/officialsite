@@ -35,6 +35,19 @@ const getUserObject = (email) => {
     return promise;
 }
 
+const updateUserDB = (id,mobile,city,successCallback) =>{
+    db.collection("users").doc(id).update({
+        mobile:mobile,
+        city:city
+    })
+    .then(()=>{
+        successCallback();
+    })
+    .catch((error)=>{
+        handleApiError(error);
+    })
+}
+
 // EVENT FUNCTIONS
 const createEvent = async ({e_date, e_time, poster_link_big, name, poster_link_small, ...eventDetails}, successCallback) => {
     const uploadBigposter = await uploadFile(poster_link_big, `events/${name}/poster_big.jpg`);
@@ -214,5 +227,6 @@ export {
     getUpcomingEvents,
     createParticipation,
     loginRequestBundle,
-    getUpcomingEventsWithParticipation
+    getUpcomingEventsWithParticipation,
+    updateUserDB
 };

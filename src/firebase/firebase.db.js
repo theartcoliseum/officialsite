@@ -6,6 +6,7 @@ import { uploadFile } from './firebase.storage';
 const db = firebase.firestore();
 
 
+
 // USER FUNCTIONS
 const createUserObject = (userDetails, successCallback) => {
     db.collection("users").add({...userDetails})

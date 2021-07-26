@@ -6,6 +6,7 @@
 }
 .parallax-section {
     padding-top: 5%;
+    
     min-height: 95vh;
     padding-bottom: 50px;
     .container {
@@ -47,7 +48,33 @@
     margin-bottom: 20px;
 }
 
+#site-logo{
+    width: 150px;
+}
+
+#events{
+    background-image: url('../images/DM0NaOX-abstract-hd-wallpapers-1080p.jpg');
+    background-attachment: fixed;
+    .homepage-title{
+        margin-top: 50px;
+    }
+    .carousel-img{
+        height: 50vh;
+    }
+    .no-events{
+        color: #2e2e2e;
+        text-align: center;
+        background-color: rgba(255,255,255,0.8);
+        padding: 20px;
+    }
+}
+
 #about{
+    h1{
+        font-family: 'Abril Fatface', cursive;
+        color: #2e2e2e;
+    }
+    background-image: url('../images/cool-background.png');
     padding-top: 10%;
     .jumbotron {
         background-color: rgba(255,255,255,0.2);
@@ -60,7 +87,12 @@
     }
 }
 
+#admin {
+    margin-top: 50px;
+}
+
 #dashboard{
+    
     .card-body {
         min-height: 27vh;
     }
@@ -86,12 +118,22 @@
 }
 
 #manage {
+    margin-top: 50px;
     .form-paper{
         padding: 30px;
 
         .poster-preview{
             height: 100%;
             width: 50%;
+        }
+    }
+}
+
+#participant{
+    .container{
+        max-width: 100%;
+        td, th {
+            text-align: center;
         }
     }
 }
@@ -162,10 +204,12 @@
       pointer-events: none;
   }
   .event-name{
-      color: #64b5f6 !important ;
+      color: #2e2e2e !important ;
   }
   .register-pg-title{
-    text-decoration: underline;
+      background-color: rgba(0,0,0,0.5);
+      padding: 10px;
+      color: #fff;
     font-size: 24px !important;
   }
   .event-title-bold{
@@ -173,9 +217,14 @@
       font-size: 16px;
       color:#45526e   
   }
+.buttons-row{
+    padding-left: 5px;
+}
+
   @media only screen and (max-width: 320px) {
     .homepage-title{
-        margin-top: 35px !important;
+        margin-top: 50px !important;
         max-width: none !important;
+
     }
 }

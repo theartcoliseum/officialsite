@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { MDBContainer, MDBRow, MDBCol, MDBBtn, MDBModal } from "mdbreact";
 import CreateEvent from '../CreateEvent';
 import UpcomingEvents from "./upcomingEvents";
-import { AuthContext } from "../../../context/AuthContext";
 import { EventContext } from '../../../context/EventContext';
 
 
@@ -11,12 +10,11 @@ const AdminLanding = () => {
     const [upcomingEvents, setUpcomingEvents] = useState([]);
 
     const { events } = useContext(EventContext);
-    const { user } = useContext(AuthContext);
 
     useEffect(() => {
-        if (events && events.upcomingEventsWithParticipation && events.upcomingEventsWithParticipation.length > 0) {
-          let tempEvents = events.upcomingEventsWithParticipation.map((event) => {
-            const formattedDate = new Date(event.datetime.seconds * 1000).toUTCString();
+        if (events && events.upcomingEvents && events.upcomingEvents.length > 0) {
+          let tempEvents = events.upcomingEvents.map((event) => {
+            const formattedDate = `${event.e_date.toDate().toLocaleDateString()} ${event.e_time}`;
             return {
               datetime: formattedDate,
               name: event.name,
@@ -28,7 +26,7 @@ const AdminLanding = () => {
           tempEvents = tempEvents.sort((a, b) => a.dateTime > b.dateTime);
           setUpcomingEvents(tempEvents);
         }
-      }, [events.upcomingEventsWithParticipation]);
+      }, [events.upcomingEvents]);
 
     return (
         <div className="parallax-section" id="admin">
@@ -43,7 +41,7 @@ const AdminLanding = () => {
                 </MDBRow>
                 <MDBRow>
                     <MDBCol>
-                        <UpcomingEvents upcomingEvents={upcomingEvents} manageEvent={() => {}} />
+                        <UpcomingEvents upcomingEvents={upcomingEvents} />
                     </MDBCol>
                 </MDBRow>
             </MDBContainer>

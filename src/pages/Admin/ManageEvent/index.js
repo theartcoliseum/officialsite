@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
 import { Paper, Tabs, Tab } from '@material-ui/core';
 import EventDetails from "./EventDetails";
+import ManageParticipants from "./Participants";
 
 const ManageEvent = () => {
     const [eventDetails, setEventDetails] = useState(null);
@@ -16,11 +17,11 @@ const ManageEvent = () => {
     useEffect(() => {
         if (history && history.location && history.location.state && !eventDetails) {
             // divide date time into e_date and e_time
-            setEventDetails({ ...history.location.state.event });
+            const event = JSON.parse(history.location.state.event);
+            console.log(event);
+            setEventDetails({ ...event });
         }
     }, [history]);
-
-
 
     return (
         <div className="parallax-section" id="manage">
@@ -45,6 +46,9 @@ const ManageEvent = () => {
                             </Tabs>
                             {value === 0 && <div>
                                 <EventDetails eventDetails={eventDetails} />
+                            </div>}
+                            {value === 1 && <div>
+                                <ManageParticipants participants={eventDetails.participant} />
                             </div>}
                         </Paper>
                     </MDBCol>

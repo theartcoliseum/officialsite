@@ -14,6 +14,7 @@ import Page3 from "./Page3";
 import { createParticipation } from '../../firebase/firebase.db';
 import { EventContext } from '../../context/EventContext';
 import { AuthContext } from "../../context/AuthContext";
+import logo from '../../assets/images/logo.png';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,10 +48,6 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
     const [activeStep, setActiveStep] = useState(0);
     const steps = getSteps();
 
-    useEffect(() => {
-        console.log(createEventForm)
-    }, [createEventForm]);
-
     const handleNext = (res) => {
         setCreateEventForm({ ...createEventForm, ...res });
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -63,17 +60,50 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
 
     const handleFinish = (res) => {
         setIsLoading(true);
-        createParticipation({...createEventForm, ...res}, (registration) => {
-            const event = {...eventDetails, participation: registration};
-            const upcomingEvents = [...events.upcomingEvents];
-            const eventIndex = upcomingEvents.findIndex((i) => i.id === event.id);
-            upcomingEvents.splice(eventIndex, 1);
-            upcomingEvents.push(event);
-            setEvents({ ...events, upcomingEvents: upcomingEvents });
-            setIsLoading(false);
+        const eventDetails = {...createEventForm, ...res};
+        // const eventId= eventDetails.event.split('/')[2];
+        // const userId= eventDetails.user.split('/')[2];
+        // const order_id = `order_${userId}`;
+        // Payment Happens Here
+        var options = {
+            "key": "rzp_test_l7BtPBEMOLgFoR", // Enter the Key ID generated from the Dashboard
+            "amount": parseInt(eventDetails.eventObj.part_amt) * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "The Art Coliseum",
+            "description": "Test Transaction",
+            "image": logo,
+            // "order_id": "order_9A33XWu170gUtm", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response){
+                createParticipation({...eventDetails, payment_id: response.razorpay_payment_id}, (registration) => {
+                    const event = {...eventDetails, participation: registration};
+                    const upcomingEvents = [...events.upcomingEvents];
+                    const eventIndex = upcomingEvents.findIndex((i) => i.id === event.id);
+                    upcomingEvents.splice(eventIndex, 1);
+                    upcomingEvents.push(event);
+                    setEvents({ ...events, upcomingEvents: upcomingEvents });
+                    setIsLoading(false);
+                });
+                setActiveStep((prevActiveStep) => prevActiveStep + 1);
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new window.Razorpay(options);
+        rzp1.on('payment.failed', function (response){
+                alert(response.error.code);
+                alert(response.error.description);
+                alert(response.error.source);
+                alert(response.error.step);
+                alert(response.error.reason);
+                alert(response.error.metadata.order_id);
+                alert(response.error.metadata.payment_id);
         });
-
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        rzp1.open();
+        
     }
 
     function getStepContent(step) {

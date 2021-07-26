@@ -13,7 +13,7 @@ import Login from '../Login';
 import Spinner from '../Spinner';
 import UpdateModal from '../Login/UpdateModal';
 
-// import logo from '../../assets/images/logo.png';
+import logo from '../../assets/images/logo.png';
 
 const Header = () => {
     let history = useHistory();
@@ -92,8 +92,7 @@ const Header = () => {
             {isLoading && <Spinner />}
             <MDBNavbar color="elegant-color-dark" dark expand="md" scrolling fixed="top">
                 <MDBNavbarBrand onClick={goToHome}>
-                    {/* <img src={logo} alt="site logo" /> */}
-                    <strong>The Art Coliseum</strong>
+                    <img src={logo} id="site-logo" alt="site logo" />
                 </MDBNavbarBrand>
                 <MDBNavbarToggler onClick={toggleCollapse} />
                 <MDBCollapse id="navbarCollapse3" isOpen={isOpen} navbar>

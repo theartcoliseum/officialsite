@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import { MDBRow, MDBCol, MDBBtn } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn, MDBContainer } from "mdbreact";
 import { useFormik } from 'formik';
 
 const Page2 = ({ handleBack, formData, handleNext, eventDetails }) => {
@@ -30,19 +30,19 @@ const Page2 = ({ handleBack, formData, handleNext, eventDetails }) => {
     } = createFormik.values;
 
     return (
-        <Fragment>
+        <MDBContainer>
             <form>
                 <div className="grey-text">
                     <MDBRow>
                         <MDBCol>
-                            <h3> Terms and Conditions</h3>
+                            <h4 className="register-pg-title"> Terms and Conditions</h4>
                             <div dangerouslySetInnerHTML={{ __html: eventDetails.tc }}></div>
                         </MDBCol>
                     </MDBRow>
                     {eventDetails && eventDetails.payment_enabled && (<MDBRow>
                         <MDBCol>
-                            <h3> Payment Details</h3>
-                            <div dangerouslySetInnerHTML={{ __html: eventDetails.payment }}></div>
+                            <h4 className="register-pg-title"> Entry Fee for Participants</h4>
+                            <strong><label>{eventDetails.part_amt}</label></strong>
                         </MDBCol>
                     </MDBRow>)}
                     <MDBRow>
@@ -59,7 +59,7 @@ const Page2 = ({ handleBack, formData, handleNext, eventDetails }) => {
                                 label="Accept Terms and Conditions"
                             />
                         </MDBCol></MDBRow>
-                    <MDBRow>
+                    <MDBRow className="buttons-row">
                         <MDBBtn color="elegant" onClick={() => clickHandler('back')}>
                             Back
                                     </MDBBtn>
@@ -74,7 +74,7 @@ const Page2 = ({ handleBack, formData, handleNext, eventDetails }) => {
                     </MDBRow>
                 </div>
             </form>
-        </Fragment>
+            </MDBContainer>
     );
 }
 

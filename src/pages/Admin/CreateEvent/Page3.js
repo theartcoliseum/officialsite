@@ -1,33 +1,16 @@
 import React, { Fragment } from "react";
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
-import { MDBRow, MDBCol, MDBBtn } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn, MDBInput } from "mdbreact";
 import { useFormik } from 'formik';
 
-const modules = {
-    toolbar: [
-        [{ 'header': [1, 2, false] }],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
-        ['link', 'image'],
-        ['clean']
-    ],
-};
-
-const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image'
-];
 
 const Page3 = ({ handleBack, formData, handleNext }) => {
 
     const createFormik = useFormik({
         initialValues: {
-            payment: formData.payment || '',
+            part_amt: formData.part_amt || '',
+            audience_amt: formData.audience_amt || '',
             payment_enabled: formData.payment_enabled || false
         },
         onSubmit: (values) => {
@@ -47,7 +30,8 @@ const Page3 = ({ handleBack, formData, handleNext }) => {
 
     const {
         payment_enabled,
-        payment
+        part_amt,
+        audience_amt
     } = createFormik.values;
 
     return (
@@ -71,10 +55,18 @@ const Page3 = ({ handleBack, formData, handleNext }) => {
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
-                            <ReactQuill value={payment}
-                                onChange={(value) => createFormik.setFieldValue('payment', value)}
-                                modules={modules}
-                                formats={formats} />
+                            <MDBInput label="Participant Amount" icon="money-bill-alt" group type="text" validate name="part_amt" onChange={createFormik.handleChange}
+                                value={part_amt} />
+                            {/* <div className="validation-error">
+                                    {(createFormik.errors.type && createFormik.touched.type)? createFormik.errors.type : null}
+                                </div> */}
+                        </MDBCol>
+                        <MDBCol>
+                            <MDBInput label="Audience Amount" icon="money-bill-alt" group type="text" validate name="audience_amt" onChange={createFormik.handleChange}
+                                value={audience_amt} />
+                            {/* <div className="validation-error">
+                                    {(createFormik.errors.type && createFormik.touched.type)? createFormik.errors.type : null}
+                                </div> */}
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>

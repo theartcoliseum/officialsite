@@ -1,5 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useContext, useEffect } from "react";
 import { MDBRow, MDBCol, MDBBtn, MDBInput } from "mdbreact";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import { modules, formats } from '../Quillmodules';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import MomentUtils from '@date-io/moment';
@@ -11,6 +14,10 @@ import {
 } from 'material-ui-pickers';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import { updateEvent } from '../../../firebase/firebase.db';
+import { EventContext } from '../../../context/EventContext';
+import { AuthContext } from "../../../context/AuthContext";
+import { useHistory } from 'react-router-dom';
 
 const validationSchema = yup.object().shape({
     name: yup
@@ -24,37 +31,69 @@ const validationSchema = yup.object().shape({
         .required("Event Date is mandatory"),
     e_time: yup
         .string()
-        .required("Event Date is mandatory"),
-    poster_link_big: yup
-        .string()
-        .required("Please upload poster link"),
-    poster_link_small: yup
-        .string()
-        .required("Please upload poster link"),
-    emeeting_link: yup
-        .string()
-        .required("E-meeting link is mandatory")
+        .required("Event Date is mandatory")
 });
 
 const EventDetails = ({ eventDetails }) => {
     const [posterImgBig, setPosterImgBig] = useState(false);
     const [posterImgSmall, setPosterImgSmall] = useState(false);
+    const { events, setEvents } = useContext(EventContext);
+    const { setIsLoading } = useContext(AuthContext);
+    let history = useHistory();
 
     const createFormik = useFormik({
         initialValues: {
             name: eventDetails ? eventDetails.name : '',
             type: eventDetails ? eventDetails.type : '',
-            e_date: eventDetails ? eventDetails.e_date : new Date().toLocaleDateString(),
-            e_time: eventDetails ? eventDetails.e_time : (new Date()).getTime(),
+            e_date: eventDetails ? new Date(eventDetails.e_date.seconds*1000) : new Date().toLocaleDateString(),
+            e_time: eventDetails ? new Date('1970-01-01T' + eventDetails.e_time) : (new Date()).getTime(),
             can_register: eventDetails ? eventDetails.can_register : false,
             is_reg_open: eventDetails ? eventDetails.is_reg_open : false,
             poster_link_big: eventDetails ? eventDetails.poster_link_big : '',
             poster_link_small: eventDetails ? eventDetails.poster_link_small : '',
-            emeeting_link: eventDetails ? eventDetails.emeeting_link : ''
+            emeeting_link: eventDetails ? eventDetails.emeeting_link : '',
+            tc: eventDetails ? eventDetails.tc : '',
+            payment_enabled: eventDetails ? eventDetails.payment_enabled : false,
+            part_amt: eventDetails ? eventDetails.part_amt : 0,
+            audience_amt: eventDetails ? eventDetails.audience_amt : 0,
+            poster_big: null,
+            poster_small: null
         },
         validationSchema,
         enableReinitialize: true,
-        onSubmit: (values) => {
+        onSubmit: ({ e_date, e_time, ...details }) => {
+            setIsLoading(true);
+            // Handling Date
+            let d = new Date(e_date);
+            if(d instanceof Date) {
+                d = d.toLocaleDateString();
+            } else {
+                d = e_date._i;
+            }
+
+            // Handling Time
+            let t = new Date(e_time);
+            if(t instanceof Date) {
+                t = t.toLocaleTimeString();
+            } else {
+                t = new Date(e_time._i).toLocaleTimeString();
+            }
+
+            updateEvent({ ...details, e_date: d, e_time: t, id: eventDetails.id }, (val) => {
+                // Update Context with Event Values
+                const tempUpcomingEvents = events.upcomingEvents;
+                const tempIndex = tempUpcomingEvents.findIndex((i) => i.id === val.id);
+                tempUpcomingEvents.splice(tempIndex, 1);
+                tempUpcomingEvents.push(val);
+                const tempUpcomingEventsWithParticipation = events.upcomingEventsWithParticipation;
+                const tempIndex1 = tempUpcomingEventsWithParticipation.findIndex((i) => i.id === val.id);
+                tempUpcomingEventsWithParticipation.splice(tempIndex1, 1);
+                tempUpcomingEventsWithParticipation.push(val);
+                const tempEvents = { ...events, upcomingEvents: tempUpcomingEvents, upcomingEventsWithParticipation: tempUpcomingEventsWithParticipation };
+                setEvents(tempEvents);
+                setIsLoading(false);
+                history.push('/protected/admin');
+            });
         },
     });
 
@@ -66,6 +105,10 @@ const EventDetails = ({ eventDetails }) => {
         can_register,
         is_reg_open,
         emeeting_link,
+        tc,
+        part_amt,
+        audience_amt,
+        payment_enabled
     } = createFormik.values;
 
     return (
@@ -146,7 +189,7 @@ const EventDetails = ({ eventDetails }) => {
                                 </MDBCol>
                             </MDBRow>
                             {
-                                !posterImgBig && (
+                                eventDetails && !posterImgBig && (
                                     <Fragment>
                                         <MDBRow>
                                             <MDBCol>
@@ -173,11 +216,8 @@ const EventDetails = ({ eventDetails }) => {
                                     <Fragment>
                                         <MDBRow>
                                             <MDBCol>
-                                            <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_link_big", e.target.files[0]); }}
-                                            validate />
-                                            <div className="validation-error">
-                                                {(createFormik.errors.poster_link_big && createFormik.touched.poster_link_big) ? createFormik.errors.poster_link_big : null}
-                                            </div>
+                                                <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_big", e.target.files[0]); }}
+                                                    validate />
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow>
@@ -186,7 +226,7 @@ const EventDetails = ({ eventDetails }) => {
                                                     variant="contained"
                                                     color="elegant"
                                                     type="button"
-                                                    onClick={() => setPosterImgBig(false)}
+                                                    onClick={() => { setPosterImgBig(false); createFormik.setFieldValue("poster_big", null) }}
                                                 >
                                                     Cancel
                                                 </MDBBtn>
@@ -203,7 +243,7 @@ const EventDetails = ({ eventDetails }) => {
                                 </MDBCol>
                             </MDBRow>
                             {
-                                !posterImgSmall && (
+                                eventDetails && !posterImgSmall && (
                                     <Fragment>
                                         <MDBRow>
                                             <MDBCol>
@@ -230,11 +270,8 @@ const EventDetails = ({ eventDetails }) => {
                                     <Fragment>
                                         <MDBRow>
                                             <MDBCol>
-                                            <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_link_small", e.target.files[0]); }}
-                                            validate />
-                                            <div className="validation-error">
-                                                {(createFormik.errors.poster_link_small && createFormik.touched.poster_link_small) ? createFormik.errors.poster_link_small : null}
-                                            </div>
+                                                <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_small", e.target.files[0]); }}
+                                                    validate />
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow>
@@ -243,7 +280,7 @@ const EventDetails = ({ eventDetails }) => {
                                                     variant="contained"
                                                     color="elegant"
                                                     type="button"
-                                                    onClick={() => setPosterImgSmall(false)}
+                                                    onClick={() => { setPosterImgSmall(false); createFormik.setFieldValue("poster_small", null) }}
                                                 >
                                                     Cancel
                                                 </MDBBtn>
@@ -253,7 +290,7 @@ const EventDetails = ({ eventDetails }) => {
                                 )
                             }
                         </MDBCol>
-                        
+
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
@@ -262,6 +299,39 @@ const EventDetails = ({ eventDetails }) => {
                             <div className="validation-error">
                                 {(createFormik.errors.emeeting_link && createFormik.touched.emeeting_link) ? createFormik.errors.emeeting_link : null}
                             </div>
+                        </MDBCol>
+                    </MDBRow>
+                    <MDBRow>
+                        <MDBCol>
+                            <ReactQuill name="tc" value={tc}
+                                onChange={(value) => createFormik.setFieldValue('tc', value)}
+                                modules={modules}
+                                formats={formats} />
+                        </MDBCol>
+                    </MDBRow>
+                    <MDBRow>
+                        <MDBCol>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={payment_enabled}
+                                        onChange={(e) => createFormik.setFieldValue('payment_enabled', e.target.checked)}
+                                        name="payment_enabled"
+                                        color="primary"
+                                    />
+                                }
+                                label="Payment Required"
+                            />
+                        </MDBCol>
+                    </MDBRow>
+                    <MDBRow>
+                        <MDBCol>
+                            <MDBInput label="Participant Amount" icon="calendar-day" group type="text" validate name="part_amt" onChange={createFormik.handleChange}
+                                value={part_amt} />
+                        </MDBCol>
+                        <MDBCol>
+                            <MDBInput label="Audience Amount" icon="calendar-day" group type="text" validate name="audience_amt" onChange={createFormik.handleChange}
+                                value={audience_amt} />
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>

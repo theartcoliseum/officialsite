@@ -1,10 +1,9 @@
-import React, { Fragment } from "react";
+import React from "react";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import Radio from '@material-ui/core/Radio';
-import { MDBRow, MDBCol, MDBBtn, MDBInput } from "mdbreact";
+import { MDBRow, MDBCol, MDBBtn, MDBInput, MDBContainer } from "mdbreact";
 import { useFormik } from 'formik';
 
 
@@ -38,13 +37,13 @@ const Page3 = ({ handleBack, formData, handleNext }) => {
     } = createFormik.values;
 
     return (
-        <Fragment>
+        <MDBContainer>
             <form>
                 <div className="grey-text">
+                    <h3 className="register-pg-title">Performance Type</h3>
                     <MDBRow>
                         <MDBCol>
                         <FormControl component="fieldset">
-                            <FormLabel component="legend">Performance Type</FormLabel>
                             <RadioGroup name="perf_type" value={perf_type} onChange={createFormik.handleChange}>
                                 <FormControlLabel value="Poetry" control={<Radio />} label="Poetry" />
                                 <FormControlLabel value="STORYTELLING" control={<Radio />} label="STORYTELLING" />
@@ -56,7 +55,7 @@ const Page3 = ({ handleBack, formData, handleNext }) => {
                             </FormControl>
                         </MDBCol>
                     </MDBRow>
-                    
+                    <h3 className="register-pg-title">Audition</h3>
                     <MDBRow>
                         <MDBCol>
                         <h6> 1 MIN AUDIO or VIDEO CLIP of your performance </h6>
@@ -77,12 +76,12 @@ const Page3 = ({ handleBack, formData, handleNext }) => {
                             color="elegant"
                             onClick={() => clickHandler('next')}
                         >
-                            Finish
+                            Pay and Complete Registration
                         </MDBBtn>
                     </MDBRow>
                 </div>
             </form>
-        </Fragment>
+        </MDBContainer>
     );
 }
 

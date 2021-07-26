@@ -57,7 +57,22 @@ const CreateEvent = ({ close }) => {
     const handleFinish = (res) => {
         setIsLoading(true);
         const { callback, e_date, e_time, ...finalValues } = { ...createEventForm, ...res };
-        createEvent({ e_date: e_date._i, e_time: new Date(e_time._i).toLocaleTimeString("en-US"), ...finalValues }, (createdEvent) => {
+        // Handling Date
+        let d = new Date(e_date);
+        if(d instanceof Date) {
+            d = d.toLocaleDateString();
+        } else {
+            d = e_date._i;
+        }
+
+        // Handling Time
+        let t = new Date(e_time);
+        if(t instanceof Date) {
+            t = t.toLocaleTimeString();
+        } else {
+            t = new Date(e_time._i).toLocaleTimeString();
+        }
+        createEvent({ e_date: d, e_time: t, ...finalValues }, (createdEvent) => {
             const upcoming = [...events.upcomingEvents, createdEvent];
             setEvents({ ...events, upcomingEvents: upcoming });
             setIsLoading(false);

@@ -9,7 +9,12 @@ const NextEvent = ({ nextDate }) => {
     useEffect(() => {
         if (nextDate) {
             let myInterval = setInterval(() => {
-                let d = Math.floor((new Date(nextDate).getTime() - new Date().getTime()) / 1000);
+                console.log(nextDate);
+                const parts = nextDate.split('T');
+                const dateParts = parts[0].split('/');
+                const timeParts = parts[1].split(':');
+
+                let d = Math.floor((new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1], timeParts[2]).getTime() - new Date().getTime()) / 1000);
                 const tempObj = {};
                 tempObj.days = Math.floor(d / (24 * 60 * 60));
                 d = d % (24 * 60 * 60);

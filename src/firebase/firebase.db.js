@@ -50,18 +50,20 @@ const updateUserDB = (id,mobile,city,successCallback) =>{
 }
 
 // EVENT FUNCTIONS
-const createEvent = async ({e_date, e_time, poster_link_big, name, poster_link_small, ...eventDetails}, successCallback) => {
+const createEvent = async ({poster_link_big, name, poster_link_small,e_date, ...eventDetails}, successCallback) => {
     const uploadBigposter = await uploadFile(poster_link_big, `events/${name}/poster_big.jpg`);
     const uploadSmallposter = await uploadFile(poster_link_small, `events/${name}/poster_small.jpg`);
-
-    db.collection("events").add({datetime: firebase.firestore.Timestamp.fromDate(new Date(`${e_date} ${e_time}`)), 
-    name,
-    poster_link_big: uploadBigposter,
-    poster_link_small: uploadSmallposter,
-    ...eventDetails})
+    const parts = e_date.split('/');
+    const actualDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    db.collection("events").add({
+        e_date: firebase.firestore.Timestamp.fromDate(new Date(actualDate)),
+        name,
+        poster_link_big: uploadBigposter,
+        poster_link_small: uploadSmallposter,
+        ...eventDetails})
     .then((docRef) => {
-        successCallback({id:docRef.id,e_date, e_time, poster_link_big: uploadBigposter,
-            poster_link_small: uploadSmallposter, ...eventDetails});
+        successCallback({id:docRef.id, poster_link_big: uploadBigposter, name,
+            poster_link_small: uploadSmallposter,e_date:firebase.firestore.Timestamp.fromDate(new Date(actualDate)), ...eventDetails});
     })
     .catch((error) => {
         handleApiError(error);
@@ -70,18 +72,21 @@ const createEvent = async ({e_date, e_time, poster_link_big, name, poster_link_s
 
 const getUpcomingEvents = (successCallback) => {
     const today = new Date();
-    db.collection("events").where("datetime", ">", today)
+    db.collection("events").where("e_date", ">=", today)
     .get()
     .then((querySnapshot) => {
         let events = [];
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(async (doc) => {
             const event = {id: doc.id, ...doc.data()};
-            db.collection('participations').where('event', '==', `/events/${event.id}`)
-            .get().then((queryS) => {
-                queryS.forEach((doci) => {
-                    event.participant = {id: doci.id, ...doci.data()};
-                });
-            })
+            event.participant = [];
+            const participants = await db.collection('participations').where('event', '==', `/events/${event.id}`).get();
+            await participants.forEach(async (doci) => {
+                let participantData = {id: doci.id, ...doci.data()};
+                const userId = participantData.user.split('/')[2];
+                const user = await db.collection('users').doc(userId).get();
+                participantData = {...participantData, ...user.data()};
+                event.participant.push({...participantData, ...user});
+            });
             events.push(event);
         });
         successCallback(events);
@@ -94,7 +99,7 @@ const getUpcomingEvents = (successCallback) => {
 const getUpcomingEventsWithParticipation = (userId) => {
     const promise = new Promise((resolve, reject) => {
         const today = new Date();
-        db.collection("events").where("datetime", ">", today)
+        db.collection("events").where("e_date", ">=", today)
         .get()
         .then((querySnapshot) => {
             let events = [];
@@ -120,7 +125,7 @@ const getUpcomingEventsWithParticipation = (userId) => {
 const getAllPastEvents = () => {
     const promise = new Promise((resolve, reject) => {
         const today = new Date();
-        db.collection("events").where("datetime", "<=", today)
+        db.collection("events").where("e_date", "<", today)
         .get()
         .then((querySnapshot) => {
             let events = [];
@@ -146,7 +151,7 @@ const getAllPastEvents = () => {
 const getPastEventsParticipated = (userId) => {
     const promise = new Promise((resolve, reject) => {
         const today = new Date();
-        db.collection("events").where("datetime", "<", today)
+        db.collection("events").where("e_date", "<", today)
         .get()
         .then((querySnapshot) => {
             let events = [];
@@ -177,6 +182,30 @@ const getPastEventsAudience = () => {
 
 };
 
+const updateEvent = async (eventDetails, successCallback) => {
+    let {id, name, e_date, poster_big, poster_small, poster_link_big, poster_link_small, ...details} = eventDetails;
+    // If files have changed then re-upload them
+    if(poster_big) {
+        poster_link_big = await uploadFile(poster_big, `events/${name}/poster_big.jpg`);
+    }
+    if(poster_small) {
+        poster_link_small = await uploadFile(poster_small, `events/${name}/poster_big.jpg`);
+    }
+
+    // Date Handling
+    const parts = e_date.split('/');
+    const actualDate = new Date(parts[2], parts[1] - 1, parts[0]);
+    const eventObj = {e_date: firebase.firestore.Timestamp.fromDate(new Date(actualDate)),
+        name,poster_link_big,poster_link_small, ...details};
+    db.collection("events").doc(id).update(eventObj).then(() =>
+        {
+            console.log('Event Updated Successfully');
+            successCallback(eventObj);
+        }).catch((error) => {
+            handleApiError(error);
+        });
+}
+
 // Participation Functions
 // EVENT FUNCTIONS
 const createParticipation = async ({audition_link, audition_url,user, event, ...participationDetails}, successCallback) => {
@@ -205,6 +234,31 @@ const createParticipation = async ({audition_link, audition_url,user, event, ...
     .catch((error) => {
         handleApiError(error);
     });
+};
+
+const updateParticipant = (participant) => {
+    // REMOVING BAD FIELDS
+    const {metadata, _userDataWriter, _key, _firestoreImpl, _firestore, _document, _delegate, _converter, ...actualObj} = participant;
+    return new Promise((resolve, reject) => {
+        db.collection("participations").doc(actualObj.id).update(actualObj).then(() =>
+        {
+            console.log("DONE!");
+            resolve(participant);
+        }).catch((error) => {
+            reject(error);
+        });
+    })
+}
+
+const updateParticipationList = (participantsList, successCallback) => {
+    const promiseList = [];
+    participantsList.forEach((part) => {
+        promiseList.push(updateParticipant(part));
+    });
+    Promise.all(promiseList).then(() => {
+        console.log('Update Successful!');
+        successCallback(participantsList);
+    }).catch((error) => console.log(error));
 }
 
 const loginRequestBundle = (email, successCallback) => {
@@ -214,13 +268,20 @@ const loginRequestBundle = (email, successCallback) => {
             promises.push(getAllPastEvents());
         }
         Promise.all(promises).then((results) => {
-            console.log({user, events: results});
             successCallback({user, events: results});
         });
     }).catch((error) => {
         handleApiError(error);
     });
 };
+
+const isDateValid = (date) => {
+    if(date instanceof Date) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 export {
     createUserObject,
@@ -229,5 +290,7 @@ export {
     createParticipation,
     loginRequestBundle,
     getUpcomingEventsWithParticipation,
+    updateEvent,
+    updateParticipationList,
     updateUserDB
 };

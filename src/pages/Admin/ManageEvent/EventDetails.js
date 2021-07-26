@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext } from "react";
+import React, { Fragment, useState, useContext, useEffect } from "react";
 import { MDBRow, MDBCol, MDBBtn, MDBInput } from "mdbreact";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -17,6 +17,7 @@ import { useFormik } from 'formik';
 import { updateEvent } from '../../../firebase/firebase.db';
 import { EventContext } from '../../../context/EventContext';
 import { AuthContext } from "../../../context/AuthContext";
+import { useHistory } from 'react-router-dom';
 
 const validationSchema = yup.object().shape({
     name: yup
@@ -38,13 +39,14 @@ const EventDetails = ({ eventDetails }) => {
     const [posterImgSmall, setPosterImgSmall] = useState(false);
     const { events, setEvents } = useContext(EventContext);
     const { setIsLoading } = useContext(AuthContext);
+    let history = useHistory();
 
     const createFormik = useFormik({
         initialValues: {
             name: eventDetails ? eventDetails.name : '',
             type: eventDetails ? eventDetails.type : '',
-            e_date: eventDetails ? eventDetails.datetime.toDate() : new Date().toLocaleDateString(),
-            e_time: eventDetails ? eventDetails.datetime.toDate() : (new Date()).getTime(),
+            e_date: eventDetails ? new Date(eventDetails.e_date.seconds*1000) : new Date().toLocaleDateString(),
+            e_time: eventDetails ? new Date('1970-01-01T' + eventDetails.e_time) : (new Date()).getTime(),
             can_register: eventDetails ? eventDetails.can_register : false,
             is_reg_open: eventDetails ? eventDetails.is_reg_open : false,
             poster_link_big: eventDetails ? eventDetails.poster_link_big : '',
@@ -52,36 +54,45 @@ const EventDetails = ({ eventDetails }) => {
             emeeting_link: eventDetails ? eventDetails.emeeting_link : '',
             tc: eventDetails ? eventDetails.tc : '',
             payment_enabled: eventDetails ? eventDetails.payment_enabled : false,
-            payment: eventDetails ? eventDetails.payment : '',
+            part_amt: eventDetails ? eventDetails.part_amt : 0,
+            audience_amt: eventDetails ? eventDetails.audience_amt : 0,
+            poster_big: null,
+            poster_small: null
         },
         validationSchema,
         enableReinitialize: true,
-        onSubmit: ({e_date, e_time, ...details}) => {
+        onSubmit: ({ e_date, e_time, ...details }) => {
             setIsLoading(true);
-            let datetimef = '';
-            if(!(e_date instanceof Date)) {
-                datetimef = datetimef + e_date._d.toLocaleDateString("en-US");
+            // Handling Date
+            let d = new Date(e_date);
+            if(d instanceof Date) {
+                d = d.toLocaleDateString();
             } else {
-                datetimef = datetimef + e_date;
+                d = e_date._i;
             }
-            datetimef = datetimef + ' ';
-            if(!(e_time instanceof Date)) {
-                datetimef = datetimef + e_time._d.toLocaleTimeString("en-US");
+
+            // Handling Time
+            let t = new Date(e_time);
+            if(t instanceof Date) {
+                t = t.toLocaleTimeString();
             } else {
-                datetimef = datetimef + e_time.toLocaleTimeString("en-US");
+                t = new Date(e_time._i).toLocaleTimeString();
             }
-            updateEvent({...details, datetime: datetimef, id: eventDetails.id}, (val) => {
-                console.log(val);
+
+            updateEvent({ ...details, e_date: d, e_time: t, id: eventDetails.id }, (val) => {
                 // Update Context with Event Values
                 const tempUpcomingEvents = events.upcomingEvents;
                 const tempIndex = tempUpcomingEvents.findIndex((i) => i.id === val.id);
                 tempUpcomingEvents.splice(tempIndex, 1);
+                tempUpcomingEvents.push(val);
                 const tempUpcomingEventsWithParticipation = events.upcomingEventsWithParticipation;
                 const tempIndex1 = tempUpcomingEventsWithParticipation.findIndex((i) => i.id === val.id);
                 tempUpcomingEventsWithParticipation.splice(tempIndex1, 1);
-                const tempEvents = {...events, upcomingEvents: tempUpcomingEvents, upcomingEventsWithParticipation: tempUpcomingEventsWithParticipation};
+                tempUpcomingEventsWithParticipation.push(val);
+                const tempEvents = { ...events, upcomingEvents: tempUpcomingEvents, upcomingEventsWithParticipation: tempUpcomingEventsWithParticipation };
                 setEvents(tempEvents);
                 setIsLoading(false);
+                history.push('/protected/admin');
             });
         },
     });
@@ -95,7 +106,8 @@ const EventDetails = ({ eventDetails }) => {
         is_reg_open,
         emeeting_link,
         tc,
-        payment,
+        part_amt,
+        audience_amt,
         payment_enabled
     } = createFormik.values;
 
@@ -204,8 +216,8 @@ const EventDetails = ({ eventDetails }) => {
                                     <Fragment>
                                         <MDBRow>
                                             <MDBCol>
-                                            <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_link_big", e.target.files[0]); }}
-                                            validate />
+                                                <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_big", e.target.files[0]); }}
+                                                    validate />
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow>
@@ -214,7 +226,7 @@ const EventDetails = ({ eventDetails }) => {
                                                     variant="contained"
                                                     color="elegant"
                                                     type="button"
-                                                    onClick={() => {setPosterImgBig(false);createFormik.setFieldValue("poster_link_big", eventDetails.poster_link_big)}}
+                                                    onClick={() => { setPosterImgBig(false); createFormik.setFieldValue("poster_big", null) }}
                                                 >
                                                     Cancel
                                                 </MDBBtn>
@@ -258,11 +270,8 @@ const EventDetails = ({ eventDetails }) => {
                                     <Fragment>
                                         <MDBRow>
                                             <MDBCol>
-                                            <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_link_small", e.target.files[0]); }}
-                                            validate />
-                                            <div className="validation-error">
-                                                {(createFormik.errors.poster_link_small && createFormik.touched.poster_link_small) ? createFormik.errors.poster_link_small : null}
-                                            </div>
+                                                <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_small", e.target.files[0]); }}
+                                                    validate />
                                             </MDBCol>
                                         </MDBRow>
                                         <MDBRow>
@@ -271,7 +280,7 @@ const EventDetails = ({ eventDetails }) => {
                                                     variant="contained"
                                                     color="elegant"
                                                     type="button"
-                                                    onClick={() => {setPosterImgSmall(false);createFormik.setFieldValue("poster_link_small", eventDetails.poster_link_small)}}
+                                                    onClick={() => { setPosterImgSmall(false); createFormik.setFieldValue("poster_small", null) }}
                                                 >
                                                     Cancel
                                                 </MDBBtn>
@@ -281,7 +290,7 @@ const EventDetails = ({ eventDetails }) => {
                                 )
                             }
                         </MDBCol>
-                        
+
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
@@ -317,10 +326,12 @@ const EventDetails = ({ eventDetails }) => {
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
-                            <ReactQuill value={payment}
-                                onChange={(value) => createFormik.setFieldValue('payment', value)}
-                                modules={modules}
-                                formats={formats} />
+                            <MDBInput label="Participant Amount" icon="calendar-day" group type="text" validate name="part_amt" onChange={createFormik.handleChange}
+                                value={part_amt} />
+                        </MDBCol>
+                        <MDBCol>
+                            <MDBInput label="Audience Amount" icon="calendar-day" group type="text" validate name="audience_amt" onChange={createFormik.handleChange}
+                                value={audience_amt} />
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>

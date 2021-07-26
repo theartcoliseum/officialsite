@@ -17,7 +17,9 @@ const ManageEvent = () => {
     useEffect(() => {
         if (history && history.location && history.location.state && !eventDetails) {
             // divide date time into e_date and e_time
-            setEventDetails({ ...history.location.state.event });
+            const event = JSON.parse(history.location.state.event);
+            console.log(event);
+            setEventDetails({ ...event });
         }
     }, [history]);
 

@@ -1,4 +1,4 @@
-import React ,{useState,useContext} from "react";
+import React ,{useState,useContext, useEffect} from "react";
 import { MDBCarousel, MDBCarouselInner, MDBCarouselItem, MDBView, MDBContainer, MDBBtn , MDBModal } from
   "mdbreact";
 import firebase from "firebase/app";
@@ -12,7 +12,8 @@ const Events = ({eventlist}) => {
   const [registerModalData, setRegisterModalData] = useState(null);
   const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
 
-  const {user, setUser, setIsLoading, isLoading} = useContext(AuthContext);
+  const {user, setUser, setIsLoading} = useContext(AuthContext);
+
 
   const registerEvent = function(index){
     const eventConsidered = eventlist[index];
@@ -27,20 +28,26 @@ const Events = ({eventlist}) => {
       }
     }
   }
+
+
   const srcRender = function(big,small){
     if(window.innerWidth>1000){
       return big;
     }
     return small;
   }
+
+
   return (
     <div className="parallax-section" id="events">
       <MDBContainer className="homepage-title">
-        <h1>The Art Coliseum</h1>
-        <h4>Family of Artists</h4>
+        <h1>Upcoming Events</h1>
       </MDBContainer>
       <MDBContainer>
-        <MDBCarousel
+        {!eventlist || eventlist.length == 0 && (
+          <h2 class="no-events">No Events Coming Up!</h2>
+        )}
+        {eventlist && eventlist.length > 0 && (<MDBCarousel
           activeItem={1}
           length={eventlist.length}
           showControls={true}
@@ -52,13 +59,15 @@ const Events = ({eventlist}) => {
             {eventlist && eventlist.map((event, index) => (
               <MDBCarouselItem itemId={index + 1}>
               <MDBView>
-                <img
+                {event.poster_link_big && event.poster_link_small && (
+                  <img
                   onClick={()=>registerEvent(index)}
-                  title="CLick to Register"
-                  className="d-block w-100 img-fluid"
+                  title="Click to Register"
+                  className="d-block w-100 img-fluid carousel-img"
                   src={srcRender(event.poster_link_big,event.poster_link_small)}
                   alt={event.name}
                 />
+                )}
                 {/* <button onClick={()=>registerEvent(event)}>
                   <span>Click to register</span>
                 </button> */}
@@ -67,6 +76,7 @@ const Events = ({eventlist}) => {
             ))}
           </MDBCarouselInner>
         </MDBCarousel>
+        )}
       </MDBContainer>
       <MDBModal isOpen={isLoginModalOpen} centered>
         <Login setUser={setUser} setIsLoading={setIsLoading} close={() => { setIsLoginModalOpen(false); }} />

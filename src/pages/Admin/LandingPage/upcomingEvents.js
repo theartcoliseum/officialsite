@@ -10,7 +10,7 @@ const UpcomingEvents = ({ upcomingEvents }) => {
         history.push({
             pathname: '/protected/admin/manage',
             state: {
-                event: eventObj
+                event: JSON.stringify(eventObj)
             }
         });
     }

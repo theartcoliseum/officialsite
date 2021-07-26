@@ -23,11 +23,9 @@ function useEventDetailsHook() {
     });
 
     useEffect(() => {
-        if(events) {
-            console.log('From Event Context....');
-            console.log(events);
-        }        
-    }, [events])
+        console.log('From Events Context-----');
+        console.log(events);
+    }, [events]);
 
     return {
         events,

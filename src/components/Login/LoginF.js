@@ -21,7 +21,6 @@ const LoginF = ({ login , gLogin , fLogin, aLogin, tLogin }) => {
         },
         validationSchema,
         onSubmit: values => {
-            console.log(errors);
             login(values.email, values.password);
         },
     });

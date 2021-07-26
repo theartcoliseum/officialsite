@@ -22,7 +22,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (events && events.upcomingEventsWithParticipation && events.upcomingEventsWithParticipation.length > 0) {
       let tempEvents = events.upcomingEventsWithParticipation.map((event) => {
-        const formattedDate = new Date(event.datetime.seconds * 1000).toUTCString();
+        const formattedDate = `${event.e_date.toDate().toLocaleDateString()} ${event.e_time}`;
         return {
           datetime: formattedDate,
           name: event.name,
@@ -36,7 +36,7 @@ const Dashboard = () => {
       });
       tempEvents = tempEvents.sort((a, b) => a.dateTime > b.dateTime);
       setUpcomingEvents(tempEvents);
-      const tempDate = new Date(tempEvents[0].datetime);
+      const tempDate = `${new Date(tempEvents[0].eventObj.e_date.seconds * 1000).toLocaleDateString()}T${tempEvents[0].eventObj.e_time}`;
       setNextDate(tempDate);
     }
   }, [events.upcomingEventsWithParticipation]);
@@ -44,7 +44,7 @@ const Dashboard = () => {
   useEffect(() => {
     if (events && events.pastEventsParticipated && events.pastEventsParticipated.length > 0) {
       let tempEvents = events.pastEventsParticipated.map((event) => {
-        const formattedDate = new Date(event.datetime.seconds * 1000).toUTCString();
+        const formattedDate = `${event.e_date.toDate().toLocaleDateString()} ${event.e_time}`;
         return {
           datetime: formattedDate,
           name: event.name,
@@ -54,8 +54,6 @@ const Dashboard = () => {
       });
       tempEvents = tempEvents.sort((a, b) => a.dateTime > b.dateTime);
       setPastEvents(tempEvents);
-      const tempDate = new Date(tempEvents[0].datetime);
-      setNextDate(tempDate);
     }
   }, [events.pastEventsParticipated]);
 

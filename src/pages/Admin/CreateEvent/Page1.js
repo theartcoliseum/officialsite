@@ -15,25 +15,26 @@ import { useFormik } from 'formik';
 const validationSchema = yup.object().shape({
     name: yup
     .string()
-    .required("Event Name is mandatory"),
-    type: yup
-    .string()
-    .required("Event Type is mandatory"),
-    e_date: yup
-    .string()
-    .required("Event Date is mandatory"),
-    e_time: yup
-    .string()
-    .required("Event Date is mandatory"),
-    poster_link_big: yup
-    .string()
-    .required("Please upload poster link"),
-    poster_link_small: yup
-    .string()
-    .required("Please upload poster link"),
-    emeeting_link: yup
-    .string()
-    .required("E-meeting link is mandatory")
+    .required("Event Name is mandatory")
+    // ,
+    // type: yup
+    // .string()
+    // .required("Event Type is mandatory"),
+    // e_date: yup
+    // .string()
+    // .required("Event Date is mandatory"),
+    // e_time: yup
+    // .string()
+    // .required("Event Date is mandatory"),
+    // poster_link_big: yup
+    // .string()
+    // .required("Please upload poster link"),
+    // poster_link_small: yup
+    // .string()
+    // .required("Please upload poster link"),
+    // emeeting_link: yup
+    // .string()
+    // .required("E-meeting link is mandatory")
 });
 
 const Page1 = ({ handleBack, formData, handleNext }) => {
@@ -42,7 +43,7 @@ const Page1 = ({ handleBack, formData, handleNext }) => {
         initialValues: {
             name: formData.name || '',
             type: formData.type || '',
-            e_date: formData.e_date || new Date().toLocaleDateString(),
+            e_date: formData.e_date || new Date(),
             e_time: formData.e_time || (new Date()).getTime(),
             can_register: formData.can_register || false,
             is_reg_open: formData.is_reg_open || false,

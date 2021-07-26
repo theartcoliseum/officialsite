@@ -6,6 +6,7 @@ import { uploadFile } from './firebase.storage';
 const db = firebase.firestore();
 
 
+
 // USER FUNCTIONS
 const createUserObject = (userDetails, successCallback) => {
     db.collection("users").add({...userDetails})
@@ -33,6 +34,19 @@ const getUserObject = (email) => {
         });
     });
     return promise;
+}
+
+const updateUserDB = (id,mobile,city,successCallback) =>{
+    db.collection("users").doc(id).update({
+        mobile:mobile,
+        city:city
+    })
+    .then(()=>{
+        successCallback();
+    })
+    .catch((error)=>{
+        handleApiError(error);
+    })
 }
 
 // EVENT FUNCTIONS
@@ -277,5 +291,6 @@ export {
     loginRequestBundle,
     getUpcomingEventsWithParticipation,
     updateEvent,
-    updateParticipationList
+    updateParticipationList,
+    updateUserDB
 };

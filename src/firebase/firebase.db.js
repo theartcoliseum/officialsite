@@ -110,8 +110,10 @@ const getUpcomingEventsWithParticipation = (userId) => {
                     queryS.forEach((doci) => {
                         event.participant = {id: doci.id, ...doci.data()};
                     });
-                })
-                events.push(event);
+                });
+                if(event.participant) {
+                    events.push(event);
+                }                
             });
             resolve({eventObj: events, label: 'upcomingEventsWithParticipation'});
         })

@@ -27,8 +27,8 @@ const HomePage = () => {
 
   return (
     <Fragment>
-        <Events eventlist={events.upcomingEvents} />
         <About />
+        <Events eventlist={events.upcomingEvents} />
         <Services />
         <Team />
     </Fragment>

@@ -80,7 +80,11 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
                     const eventIndex = upcomingEvents.findIndex((i) => i.id === event.id);
                     upcomingEvents.splice(eventIndex, 1);
                     upcomingEvents.push(event);
-                    setEvents({ ...events, upcomingEvents: upcomingEvents });
+                    const upcomingEventsWithParticipation = [...events.upcomingEventsWithParticipation];
+                    const eventIndex1 = upcomingEventsWithParticipation.findIndex((i) => i.id === event.id);
+                    upcomingEventsWithParticipation.splice(eventIndex1, 1);
+                    upcomingEventsWithParticipation.push(event);
+                    setEvents({ ...events, upcomingEvents: upcomingEvents, upcomingEventsWithParticipation: upcomingEventsWithParticipation  });
                     setIsLoading(false);
                 });
                 setActiveStep((prevActiveStep) => prevActiveStep + 1);

@@ -50,7 +50,7 @@ const UpcomingEvents = ({ upcomingEvents }) => {
               </MDBCardHeader>
             <MDBCardBody className="table-container">
                 <MDBCardText>
-                    <MDBTable btn responsive scrollY striped sorting="true">
+                    <MDBTable btn responsive striped sorting="true">
                         <MDBTableHead columns={columns} />
                         <MDBTableBody>
                             {(!upcomingEvents || upcomingEvents.length === 0) && (

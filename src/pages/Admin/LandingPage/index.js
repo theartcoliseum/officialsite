@@ -14,7 +14,13 @@ const AdminLanding = () => {
     useEffect(() => {
         if (events && events.upcomingEvents && events.upcomingEvents.length > 0) {
           let tempEvents = events.upcomingEvents.map((event) => {
-            const formattedDate = `${event.e_date.toDate().toLocaleDateString()} ${event.e_time}`;
+              let eventD = null;
+              if(event.e_date) {
+                eventD = event;
+              } else if(event.eventObj.e_date) {
+                eventD = event.eventObj;
+              }
+            const formattedDate = `${eventD.e_date.toDate().toLocaleDateString()} ${eventD.e_time}`;
             return {
               datetime: formattedDate,
               name: event.name,

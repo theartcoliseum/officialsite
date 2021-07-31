@@ -20,9 +20,24 @@ const Dashboard = () => {
   const [pastEvents, setPastEvents] = useState([]);
 
   useEffect(() => {
-    if (events && events.upcomingEventsWithParticipation && events.upcomingEventsWithParticipation.length > 0) {
-      let tempEvents = events.upcomingEventsWithParticipation.map((event) => {
-        const formattedDate = `${event.e_date.toDate().toLocaleDateString()} ${event.e_time}`;
+    if (events && events.upcomingEvents && events.upcomingEvents.length > 0) {
+      let tempEvents = events.upcomingEvents.map((event) => {
+        // Format Date
+        let eventD = null;
+        if (event.e_date) {
+          eventD = event;
+        } else if (event.eventObj.e_date) {
+          eventD = event.eventObj;
+        }
+        const formattedDate = `${eventD.e_date.toDate().toLocaleDateString()} ${eventD.e_time}`;
+        // Check if the event is being participated in event
+        let participant = false;
+        if(event.participant) {
+          const myParticipant = event.participant.findIndex((i) => i.userObj.id === user.id);
+          if(myParticipant !== -1) {
+            participant = true;
+          }
+        }
         return {
           datetime: formattedDate,
           name: event.name,
@@ -30,7 +45,7 @@ const Dashboard = () => {
           payment_status: event.payment_enabled ? 'Paid' : 'Free',
           can_register: event.can_register,
           is_reg_open: event.is_reg_open,
-          participant: event.participant ? true : false,
+          participant: participant,
           eventObj: event
         };
       });
@@ -39,12 +54,18 @@ const Dashboard = () => {
       const tempDate = `${new Date(tempEvents[0].eventObj.e_date.seconds * 1000).toLocaleDateString()}T${tempEvents[0].eventObj.e_time}`;
       setNextDate(tempDate);
     }
-  }, [events.upcomingEventsWithParticipation]);
+  }, [events.upcomingEvents]);
 
   useEffect(() => {
     if (events && events.pastEventsParticipated && events.pastEventsParticipated.length > 0) {
       let tempEvents = events.pastEventsParticipated.map((event) => {
-        const formattedDate = `${event.e_date.toDate().toLocaleDateString()} ${event.e_time}`;
+        let eventD = null;
+        if (event.e_date) {
+          eventD = event;
+        } else if (event.eventObj.e_date) {
+          eventD = event.eventObj;
+        }
+        const formattedDate = `${eventD.e_date.toDate().toLocaleDateString()} ${eventD.e_time}`;
         return {
           datetime: formattedDate,
           name: event.name,

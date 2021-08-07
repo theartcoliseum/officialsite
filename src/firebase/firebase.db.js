@@ -226,12 +226,27 @@ const createParticipation = async ({audition_link, audition_url,user, event, ...
         audition: link,
         status: 'Registered',
         ...participationDetails
+        // accpettc:participationDetails.accpettc,
+        // payment_id:participationDetails.payment_id,
+        // perf_type:participationDetails.perf_type,
+        // userObj: participationDetails.userObj
     };
     
-
+    console.log(participationObj);
     db.collection("participations").add(participationObj)
     .then((docRef) => {
         successCallback({id:docRef.id,...participationObj});
+    })
+    .catch((error) => {
+        handleApiError(error);
+    });
+};
+
+const createAudience = async (eventDetails, successCallback) => {
+    console.log(eventDetails);
+    db.collection("audience").add(eventDetails)
+    .then((docRef) => {
+        successCallback({id:docRef.id,...eventDetails});
     })
     .catch((error) => {
         handleApiError(error);
@@ -294,5 +309,6 @@ export {
     getUpcomingEventsWithParticipation,
     updateEvent,
     updateParticipationList,
-    updateUserDB
+    updateUserDB,
+    createAudience
 };

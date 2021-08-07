@@ -310,7 +310,7 @@ const ManageParticipants = ({ participants }) => {
                         {participantsDetails && participantsDetails.map((user, index) => (
                             <tr key={user.posn_no}>
                                 <td>
-                                    {/* <FormControlLabel
+                                    <FormControlLabel
                                         control={
                                             <Checkbox
                                                 color="primary"
@@ -319,8 +319,8 @@ const ManageParticipants = ({ participants }) => {
                                                 onChange={(e) => createFinalList(e.target.checked, 'posn', user)}
                                             />
                                         }
-                                    /> */}
-                                    {JSON.stringify({attendance: user.attendance, posn: user.posn, posn_no: user.posn_no})}
+                                    />
+                                    {/* {JSON.stringify({attendance: user.attendance, posn: user.posn, posn_no: user.posn_no})} */}
                                 </td>
                                 <td>{new Date(user.dates.registeredDate.seconds * 1000).toLocaleDateString()} {new Date(user.dates.registeredDate.seconds * 1000).toLocaleTimeString()}</td>
                                 <td>{user.userObj.f_name} {user.userObj.l_name}</td>

@@ -7,7 +7,7 @@ const About = () => {
       <MDBContainer>
         <MDBRow>
           
-          <MDBCol>
+          <MDBCol md="4" sm="12">
             <MDBJumbotron>
               <h1 className="h1-responsive">The Art Coliseum</h1>
               <p className="lead">

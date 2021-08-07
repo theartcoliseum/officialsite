@@ -148,6 +148,8 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
     const createAudienceCall = (eventDetails, payment_id) =>{
         const audienceObj = {
             ...eventDetails,
+            event: `/events/${eventDetails.eventObj.id}`,
+            user: `/users/${eventDetails.userObj.id}`,
             payment_id: payment_id || '',
             eventObj: {
                 id: eventDetails.eventObj.id,

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useContext } from "react";
+import React, { Fragment, useEffect, useContext, useState } from "react";
 import { AuthContext } from '../../context/AuthContext';
 import { EventContext } from '../../context/EventContext';
 import { getUpcomingEvents } from '../../firebase/firebase.db';
@@ -9,8 +9,9 @@ import Team from './Team';
 
 const HomePage = () => {
 
-  const {user, setIsLoading} = useContext(AuthContext);
+  const {setIsLoading} = useContext(AuthContext);
   const {events, setEvents} = useContext(EventContext);
+  const [displayedEvents, setDisplayedEvents] = useState([]);
 
   useEffect(() => {
     if(!events.eventsLoaded) {
@@ -18,6 +19,8 @@ const HomePage = () => {
       getUpcomingEvents((event) => {
         const tempEvents = {...events};
         tempEvents.upcomingEvents = event;
+        
+        setDisplayedEvents([...event]);
         tempEvents.eventsLoaded = true;
         setEvents({...tempEvents });
         setIsLoading(false);
@@ -25,10 +28,16 @@ const HomePage = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if(events && events.upcomingEvents) {
+      setDisplayedEvents([...events.upcomingEvents]);
+    }
+  }, [events.upcomingEvents]);
+
   return (
     <Fragment>
         <About />
-        <Events eventlist={events.upcomingEvents} />
+        <Events eventlist={displayedEvents} />
         <Services />
         <Team />
     </Fragment>

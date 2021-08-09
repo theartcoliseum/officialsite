@@ -39,7 +39,11 @@ const Events = ({ eventlist }) => {
         if (eventlist[i]) {
           group.push(eventlist[i]);
         }
-        if(window.innerWidth<600) continue;
+        if(window.innerWidth<600){
+          groupedEvents.push(group);
+          i++;
+          continue;
+        }
         if (eventlist[i + 1]) {
           group.push(eventlist[i + 1]);
         }

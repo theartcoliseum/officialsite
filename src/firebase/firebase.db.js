@@ -42,7 +42,7 @@ const updateUserDB = (id,mobile,city,successCallback) =>{
         city:city
     })
     .then(()=>{
-        successCallback();
+        successCallback(mobile, city);
     })
     .catch((error)=>{
         handleApiError(error);
@@ -74,21 +74,26 @@ const getUpcomingEvents = (successCallback) => {
     const today = new Date();
     db.collection("events").where("e_date", ">=", today)
     .get()
-    .then((querySnapshot) => {
+    .then(async (querySnapshot) => {
         let events = [];
-        querySnapshot.forEach(async (doc) => {
+        await Promise.all(querySnapshot.docs.map(async (doc) => {
             const event = {id: doc.id, ...doc.data()};
             event.participant = [];
             const participants = await db.collection('participations').where('event', '==', `/events/${event.id}`).get();
-            await participants.forEach(async (doci) => {
+            await Promise.all(participants.docs.map(async (doci) => {
                 let participantData = {id: doci.id, ...doci.data()};
                 const userId = participantData.user.split('/')[2];
                 const user = await db.collection('users').doc(userId).get();
                 participantData = {...participantData, ...user.data()};
                 event.participant.push({...participantData, ...user});
+            }));
+            const audience = await db.collection('audience').where('event', '==', `/events/${event.id}`).get();
+            event.audience = [];
+            audience.forEach(async (doci) => {
+                event.audience.push({id: doci.id, ...doci.data()});
             });
             events.push(event);
-        });
+        }));
         successCallback(events);
     })
     .catch((error) => {
@@ -103,17 +108,19 @@ const getUpcomingEventsWithParticipation = (userId) => {
         .get()
         .then((querySnapshot) => {
             let events = [];
-            querySnapshot.forEach((doc) => {
+            querySnapshot.forEach(async (doc) => {
                 const event = {id: doc.id, ...doc.data()};
-                db.collection('participations').where('user', '==', `/users/${userId}`).where('event', '==', `/events/${event.id}`)
-                .get().then((queryS) => {
-                    queryS.forEach((doci) => {
-                        event.participant = {id: doci.id, ...doci.data()};
-                    });
+                const queryS = await db.collection('participations').where('user', '==', `/users/${userId}`).where('event', '==', `/events/${event.id}`).get();
+                queryS.forEach((doci) => {
+                    event.participant = {id: doci.id, ...doci.data()};
                 });
-                if(event.participant) {
+                const queryY = await db.collection('audience').where('user', '==', `/users/${userId}`).where('event', '==', `/events/${event.id}`).get();
+                queryY.forEach((doci) => {
+                    event.audience = {id: doci.id, ...doci.data()};
+                });
+                if(event.audience || event.participant) {
                     events.push(event);
-                }                
+                }
             });
             resolve({eventObj: events, label: 'upcomingEventsWithParticipation'});
         })

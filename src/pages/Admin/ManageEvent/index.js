@@ -4,6 +4,7 @@ import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
 import { Paper, Tabs, Tab } from '@material-ui/core';
 import EventDetails from "./EventDetails";
 import ManageParticipants from "./Participants";
+import AudienceList from "./Audience";
 
 const ManageEvent = () => {
     const [eventDetails, setEventDetails] = useState(null);
@@ -39,16 +40,19 @@ const ManageEvent = () => {
                                 indicatorColor="primary"
                                 textColor="primary"
                                 onChange={handleChange}
-                                aria-label="disabled tabs example"
                             >
                                 <Tab label="Event Details" />
                                 <Tab label="Participants" />
+                                <Tab label="Audience" />
                             </Tabs>
                             {value === 0 && <div>
                                 <EventDetails eventDetails={eventDetails} />
                             </div>}
                             {value === 1 && <div>
                                 <ManageParticipants participants={eventDetails.participant} />
+                            </div>}
+                            {value === 2 && <div>
+                                <AudienceList audiencelist={eventDetails.audience} />
                             </div>}
                         </Paper>
                     </MDBCol>

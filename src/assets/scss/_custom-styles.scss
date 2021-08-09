@@ -93,6 +93,10 @@
 }
 
 #services{
+    h1{
+        font-family: 'Abril Fatface', cursive;
+        color: #2e2e2e;
+    }
     background-image: url('../images/4.png');
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -131,6 +135,7 @@
 }
 
 #dashboard{
+    padding-top: 7%;
     
     .card-body {
         min-height: 27vh;
@@ -202,6 +207,19 @@
 
     }
 }
+
+.card{
+        height: 100% !important;
+        .card-body{
+            height:100% !important;
+            .card-text{
+                height: 100% !important;
+                .table-wrapper-scroll-y{
+                    max-height: 100% !important;
+                }
+            }
+        }
+    }
 
 .validation-error{
     font-size: 12px;
@@ -286,20 +304,24 @@
     padding-left: 5px;
 }
 
-  @media only screen and (max-width: 320px) {
+  @media only screen and (max-width: 600px) {
     .homepage-title{
-        margin-top: 50px !important;
         max-width: none !important;
 
     }
     .carousel-control-prev{
-        left: -2rem;
+        left: -2.5rem !important;
     }
     .carousel-control-next{
-        right: -2rem;
+        right: -2.5rem !important;
     }
     .carousel-control-prev-icon, .carousel-control-next-icon{
         width: 2rem;
         height: 2rem;
+    }
+    #about{
+        .container{
+            padding-top: 100px;
+        }
     }
 }

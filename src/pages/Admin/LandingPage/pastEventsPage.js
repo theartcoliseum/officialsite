@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { MDBCard, MDBCardHeader, MDBCardBody, MDBCardText, MDBTable, MDBTableBody, MDBBtn, MDBTableHead } from "mdbreact";
 
 
-const UpcomingEvents = ({ upcomingEvents }) => {
+const PastEventsPage = ({ pastEvents }) => {
     let history = useHistory();
 
     const manageEvent = (eventObj) => {
@@ -11,10 +11,10 @@ const UpcomingEvents = ({ upcomingEvents }) => {
             pathname: '/protected/admin/manage',
             state: {
                 event: JSON.stringify(eventObj),
-                type: 'future'
+                type: 'past'
             }
         });
-    }
+    };
 
     const columns = [
         {
@@ -47,21 +47,21 @@ const UpcomingEvents = ({ upcomingEvents }) => {
     return (
         <MDBCard>
             <MDBCardHeader tag="h3">
-                Upcoming Events
+                Past Events
               </MDBCardHeader>
             <MDBCardBody className="table-container">
                 <MDBCardText>
                     <MDBTable btn responsive striped sorting="true">
                         <MDBTableHead columns={columns} />
                         <MDBTableBody>
-                            {(!upcomingEvents || upcomingEvents.length === 0) && (
+                            {(!pastEvents || pastEvents.length === 0) && (
                                 <tr>
                                     <td colSpan="5">
-                                        No Upcoming Events
+                                        No Past Events
                                     </td>
                                 </tr>
                             )}
-                            {upcomingEvents && upcomingEvents.map((event) => (
+                            {pastEvents && pastEvents.map((event) => (
                                 <tr>
                                     <td>{event.datetime}</td>
                                     <td>{event.name}</td>
@@ -78,4 +78,4 @@ const UpcomingEvents = ({ upcomingEvents }) => {
     );
 }
 
-export default UpcomingEvents;
+export default PastEventsPage;

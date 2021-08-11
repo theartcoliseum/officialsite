@@ -45,12 +45,12 @@ const CreateEvent = ({ close }) => {
     const steps = getSteps();
 
     const handleNext = (res) => {
-        if(res.can_register) {
-            setCreateEventForm({ ...createEventForm, ...res });
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        } else{
+        if(activeStep === 0 && !res.can_register) {
             handleFinish(res);
             setActiveStep((prevActiveStep) => prevActiveStep + 2);
+        } else{
+            setCreateEventForm({ ...createEventForm, ...res });
+            setActiveStep((prevActiveStep) => prevActiveStep + 1);
         }
     };
 

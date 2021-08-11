@@ -55,7 +55,8 @@ const Header = () => {
         setIsOpen(!isOpen);
     }
 
-    const updateSucccess = () =>{
+    const updateSucccess = (mobile, city) =>{
+        setUser({...user, mobile, city});
         setUpdateModalOpen(false);
         setIsLoading(false);
     }

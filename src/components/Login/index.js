@@ -18,8 +18,11 @@ const Login = ({ close, setUser, setIsLoading }) => {
     const updateEventsContext = (eventsGot) => {
         const eventsObj = {};
         eventsGot.forEach((i) => {
-            events[i.label] = i.eventObj;
-        })
+            eventsObj[i.label] = i.eventObj;
+            if(i.extra) {
+                eventsObj.parameters = i.extra;
+            }
+        });
         setEvents({...events, ...eventsObj});
         setIsLoading(false);
         close();

@@ -4,9 +4,11 @@ import { MDBContainer, MDBRow, MDBCol } from "mdbreact";
 import { Paper, Tabs, Tab } from '@material-ui/core';
 import EventDetails from "./EventDetails";
 import ManageParticipants from "./Participants";
+import AudienceList from "./Audience";
 
 const ManageEvent = () => {
     const [eventDetails, setEventDetails] = useState(null);
+    const [mode, setMode] = useState('');
     const history = useHistory();
     const [value, setValue] = React.useState(0);
 
@@ -18,7 +20,8 @@ const ManageEvent = () => {
         if (history && history.location && history.location.state && !eventDetails) {
             // divide date time into e_date and e_time
             const event = JSON.parse(history.location.state.event);
-            console.log(event);
+            const mode = history.location.state.type;
+            setMode(mode);
             setEventDetails({ ...event });
         }
     }, [history]);
@@ -39,16 +42,19 @@ const ManageEvent = () => {
                                 indicatorColor="primary"
                                 textColor="primary"
                                 onChange={handleChange}
-                                aria-label="disabled tabs example"
                             >
                                 <Tab label="Event Details" />
                                 <Tab label="Participants" />
+                                <Tab label="Audience" />
                             </Tabs>
                             {value === 0 && <div>
-                                <EventDetails eventDetails={eventDetails} />
+                                <EventDetails eventDetails={eventDetails} mode={mode} />
                             </div>}
                             {value === 1 && <div>
-                                <ManageParticipants participants={eventDetails.participant} />
+                                <ManageParticipants participants={eventDetails.participant} mode={mode} />
+                            </div>}
+                            {value === 2 && <div>
+                                <AudienceList audiencelist={eventDetails.audience} />
                             </div>}
                         </Paper>
                     </MDBCol>

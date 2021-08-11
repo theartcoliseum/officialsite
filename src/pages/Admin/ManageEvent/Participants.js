@@ -17,7 +17,7 @@ const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
 const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
 
-const ManageParticipants = ({ participants }) => {
+const ManageParticipants = ({ participants, mode }) => {
     const [participantsDetails, setParticipantDetails] = useState([]);
     const [finalList, setFinalList] = useState([]);
     const [isPollModalOpen, setIsPollModalOpen] = useState(false);
@@ -28,7 +28,7 @@ const ManageParticipants = ({ participants }) => {
 
     useEffect(() => {
         if (participants) {
-            const refinedParticipants = participants.map((i) => {
+            let refinedParticipants = participants.map((i) => {
                 const posn_no = (i.posn_no && i.posn_no < 100) ? i.posn_no : Math.floor(Math.random() * 10000) + 1;
                 const posn = (i.posn_no && i.posn_no < 100) ? true : false;
                 return {
@@ -37,6 +37,25 @@ const ManageParticipants = ({ participants }) => {
                     posn
                 };
             });
+            if (mode === 'past') {
+                //refinedParticipants = refinedParticipants.filter((i) => i.status === 'AUDITION_ACCEPTED');
+                const tempFinalList = refinedParticipants.map((participant) => {
+                    return {
+                        id: participant.id,
+                        posn_no: participant.posn,
+                        reg_date: `${new Date(participant.dates.registeredDate.seconds * 1000).toLocaleDateString()} ${new Date(participant.dates.registeredDate.seconds * 1000).toLocaleTimeString()}`,
+                        name: `${participant.userObj.f_name} ${participant.userObj.l_name}`,
+                        perf_type: participant.perf_type,
+                        status: participant.status,
+                        attendance: participant.attendance || 'N',
+                        poll_good: participant.poll_good || 0,
+                        poll_vgood: participant.poll_vgood || 0,
+                        poll_excel: participant.poll_excel || 0,
+                    };
+                });
+                setFinalList(tempFinalList);
+                
+            };
             setParticipantDetails(refinedParticipants);
         }
     }, [participants]);
@@ -153,10 +172,18 @@ const ManageParticipants = ({ participants }) => {
         updateParticipationList(apiParticipantsDetails, (list) => {
             const eventId = list[0].eventObj.id;
             // Update Context
-            const upcomingEvents = [...events.upcomingEvents];
-            const index = upcomingEvents.findIndex((i) => i.id === eventId);
-            upcomingEvents[index].participant = list;
-            setEvents({ ...events, upcomingEvents });
+            if(mode !== 'past') {
+                const upcomingEvents = [...events.upcomingEvents];
+                const index = upcomingEvents.findIndex((i) => i.id === eventId);
+                upcomingEvents[index].participant = list;
+                setEvents({ ...events, upcomingEvents });
+            } else {
+                const pastEvents = [...events.pastAllEvents];
+                const index = pastEvents.findIndex((i) => i.id === eventId);
+                pastEvents[index].participant = list;
+                setEvents({ ...events, pastAllEvents:pastEvents });
+            }
+            
             setIsLoading(false);
             history.push('/protected/admin');
         })
@@ -165,21 +192,19 @@ const ManageParticipants = ({ participants }) => {
     const updatePollData = (id, ...data) => {
         const tempParticipants = [...participantsDetails];
         const index = tempParticipants.findIndex((i) => i.id === id);
-        tempParticipants[index] = {...tempParticipants[index], ...data};
+        tempParticipants[index] = { ...tempParticipants[index], ...data };
         setParticipantDetails([...tempParticipants]);
     };
 
     const updateParticipantsPolls = (excelRows) => {
-        const partsToBeUpdated = [...participantsDetails];
+        const partsToBeUpdated = [];
         excelRows.forEach((i) => {
-            const actualIndex = participantsDetails.findIndex((j) => j.id === i['ID'])
-            const actual = participantsDetails[actualIndex];
-            if(actual) {
+            const actual = participantsDetails.find((j) => j.id === i['ID'])
+            if (actual) {
                 actual.attendance = i['Attendance'];
                 actual.poll_good = i['Poll%(GOOD)'];
                 actual.poll_vgood = i['Poll%(VERY GOOD)'];
                 actual.poll_excel = i['Poll%(EXCELLENT)'];
-                partsToBeUpdated.splice(actualIndex, 1);
                 partsToBeUpdated.push(actual);
             }
         });
@@ -211,94 +236,61 @@ const ManageParticipants = ({ participants }) => {
         updateParticipantsPolls(excelRows);
     }
 
-    const columns = [
-        {
-            label: 'Order of performance',
-            field: 'order',
-            sort: 'asc'
-        },
-        {
-            label: 'Registration Date',
-            field: 'datetime',
-            sort: 'asc'
-        },
-        {
-            label: 'Participant Name',
-            field: 'name',
-            sort: 'asc'
-        },
-        {
-            label: 'Participation Type',
-            field: 'perf_type',
-            sort: 'asc'
-        },
-        {
-            label: 'Audition Clip',
-            field: 'type',
-            sort: 'asc'
-        },
-        {
-            label: 'Accept Audition',
-            field: 'audition_status',
-            sort: 'asc'
-        },
-        {
-            label: 'Reject Candidate',
-            field: 'rejected_status',
-            sort: 'asc'
-        },
-        {
-            label: 'Rejection Reason',
-            field: 'rejection_reason',
-            sort: 'asc'
-        },
-        {
-            label: 'Attendance',
-            field: 'attendance',
-            sort: 'asc'
-        }
-    ];
-
     return (
         <div id="participant">
             <MDBContainer>
-                <MDBBtn
-                    variant="contained"
-                    color="elegant"
-                    onClick={filterParticipants}
-                >
-                    Filter Accepted Participants
-                </MDBBtn>
-                <ExcelFile element={<MDBBtn
-                    variant="contained"
-                    color="elegant"
-                >
-                    Download Excel
-                </MDBBtn>}>
-                    <ExcelSheet data={finalList} name="Participants">
-                        <ExcelColumn label="ID" value="id" />
-                        <ExcelColumn label="Order" value="posn_no" />
-                        <ExcelColumn label="Registration Date" value="reg_date" />
-                        <ExcelColumn label="Name" value="name" />
-                        <ExcelColumn label="Performance Type" value="perf_type" />
-                        <ExcelColumn label="Status" value="status" />
-                        <ExcelColumn label="Attendance" value="attendance" />
-                        <ExcelColumn label="Poll%(GOOD)" value="poll_good" />
-                        <ExcelColumn label="Poll%(VERY GOOD)" value="poll_vgood" />
-                        <ExcelColumn label="Poll%(EXCELLENT)" value="poll_excel" />
-                    </ExcelSheet>
-                </ExcelFile>
-                <div class="upload-btn-wrapper">
-                    <MDBBtn
+                <div className="button-row">
+                    {mode !== 'past' && (<MDBBtn
+                        variant="contained"
+                        color="elegant"
+                        onClick={filterParticipants}
+                    >
+                        Filter Accepted Participants
+                    </MDBBtn>)}
+                    <ExcelFile element={<MDBBtn
                         variant="contained"
                         color="elegant"
                     >
-                        Upload Excel with Poll Details
+                        Download Excel
+                </MDBBtn>}>
+                        <ExcelSheet data={finalList} name="Participants">
+                            <ExcelColumn label="ID" value="id" />
+                            <ExcelColumn label="Order" value="posn_no" />
+                            <ExcelColumn label="Registration Date" value="reg_date" />
+                            <ExcelColumn label="Name" value="name" />
+                            <ExcelColumn label="Performance Type" value="perf_type" />
+                            <ExcelColumn label="Status" value="status" />
+                            <ExcelColumn label="Attendance" value="attendance" />
+                            <ExcelColumn label="Poll%(GOOD)" value="poll_good" />
+                            <ExcelColumn label="Poll%(VERY GOOD)" value="poll_vgood" />
+                            <ExcelColumn label="Poll%(EXCELLENT)" value="poll_excel" />
+                        </ExcelSheet>
+                    </ExcelFile>
+                    {mode === 'past' && (<div class="upload-btn-wrapper">
+                        <MDBBtn
+                            variant="contained"
+                            color="elegant"
+                        >
+                            Upload Excel with Poll Details
                     </MDBBtn>
-                    <input type="file" name="myfile" onChange={(e) => uploadExcel(e)} />
+                        <input type="file" name="myfile" onChange={(e) => uploadExcel(e)} />
+                    </div>)}
                 </div>
                 <MDBTable btn responsive striped sorting="true">
-                    <MDBTableHead columns={columns} />
+                    <MDBTableHead>
+                        <tr>
+                            {mode !== 'past' && (<th>Order of performance</th>)}
+                            <th>Registration Date</th>
+                            <th>Participant Name</th>
+                            <th>Participation Type</th>
+                            {mode !== 'past' && (<th>Audition Clip</th>)}
+                            {mode !== 'past' && (<th>Accept Audition</th>)}
+                            {mode !== 'past' && (<th>Reject Candidate</th>)}
+                            {mode !== 'past' && (<th>Rejection Reason</th>)}
+                            {mode === 'past' && (<th>Attendance</th>)}
+                            {mode === 'past' && (<th>Poll Details</th>)}
+                        </tr>
+                    </MDBTableHead>
                     <MDBTableBody>
                         {(!participantsDetails || participantsDetails.length === 0) && (
                             <tr>
@@ -309,7 +301,7 @@ const ManageParticipants = ({ participants }) => {
                         )}
                         {participantsDetails && participantsDetails.map((user, index) => (
                             <tr key={user.posn_no}>
-                                <td>
+                                {mode !== 'past' && (<td>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -321,11 +313,11 @@ const ManageParticipants = ({ participants }) => {
                                         }
                                     />
                                     {/* {JSON.stringify({attendance: user.attendance, posn: user.posn, posn_no: user.posn_no})} */}
-                                </td>
+                                </td>)}
                                 <td>{new Date(user.dates.registeredDate.seconds * 1000).toLocaleDateString()} {new Date(user.dates.registeredDate.seconds * 1000).toLocaleTimeString()}</td>
                                 <td>{user.userObj.f_name} {user.userObj.l_name}</td>
                                 <td>{user.perf_type}</td>
-                                <td>
+                                {mode !== 'past' && (<td>
                                     {user.audition.includes('firebasestorage.googleapis.com') ?
                                         <audio controls>
                                             <source src={user.audition} />
@@ -336,8 +328,8 @@ const ManageParticipants = ({ participants }) => {
                                             Audition
                                     </Button>
                                     }
-                                </td>
-                                <td>
+                                </td>)}
+                                {mode !== 'past' && (<td>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -347,8 +339,8 @@ const ManageParticipants = ({ participants }) => {
                                             />
                                         }
                                     />
-                                </td>
-                                <td>
+                                </td>)}
+                                {mode !== 'past' && (<td>
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -358,32 +350,23 @@ const ManageParticipants = ({ participants }) => {
                                             />
                                         }
                                     />
-                                </td>
-                                <td>
+                                </td>)}
+                                {mode !== 'past' && (<td>
                                     <MDBInput disabled={!user.rejected} type="text" onChange={(e) => { user.rejectionReason = e.target.value }} />
-                                </td>
-                                <td>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                color="primary"
-                                                checked={user.attendance === true ? 'checked' : null}
-                                                onChange={(e) => handleTextBox(e.target.checked, 'attendance', user)}
-                                            />
-                                            
-                                        }
-                                    />
-                                </td>
-                                <td>
-                                <MDBBtn
-                                    className="poll-btn"
-                                    variant="contained"
-                                    color="elegant"
-                                    onClick={() => {setPollData({id: user.id, poll_good: user.poll_good, poll_vgood: user.poll_vgood, poll_excel: user.poll_excel}); setIsPollModalOpen(true)}}
-                                >
-                                    <MDBIcon icon="poll" className="ml-1" />
-                                </MDBBtn>
-                                </td>
+                                </td>)}
+                                {mode === 'past' && (<td>
+                                    <MDBInput type="text" onChange={(e) => { user.attendance = e.target.value }} value={user.attendance} />
+                                </td>)}
+                                {mode === 'past' && (<td>
+                                    <MDBBtn
+                                        className="poll-btn"
+                                        variant="contained"
+                                        color="elegant"
+                                        onClick={() => { setPollData({ id: user.id, poll_good: user.poll_good, poll_vgood: user.poll_vgood, poll_excel: user.poll_excel }); setIsPollModalOpen(true) }}
+                                    >
+                                        <MDBIcon icon="poll" className="ml-1" />
+                                    </MDBBtn>
+                                </td>)}
                             </tr>
                         ))}
                     </MDBTableBody>

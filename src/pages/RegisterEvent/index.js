@@ -64,10 +64,10 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const makePayment = (eventDetails) => {
+    const makePayment = (regDetails) => {
         var options = {
             "key": "rzp_test_l7BtPBEMOLgFoR", // Enter the Key ID generated from the Dashboard
-            "amount": parseInt(eventDetails.eventObj.part_amt) * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "amount": parseInt(regDetails.eventObj.part_amt) * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
             "currency": "INR",
             "name": "The Art Coliseum",
             "description": "Test Transaction",
@@ -75,7 +75,7 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
             // "order_id": "order_9A33XWu170gUtm", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
             "handler": function (response) {
                 // CALL CREATE PARTICIPATION HERE
-                createParticipationCall(eventDetails, response.razorpay_payment_id);
+                createParticipationCall(regDetails, response.razorpay_payment_id);
             },
             "notes": {
                 "address": "Razorpay Corporate Office"
@@ -97,26 +97,28 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
         rzp1.open();
     }
 
-    const createParticipationCall = (eventDetails, payment_id) => {
+    const createParticipationCall = (regDetails, payment_id) => {
         const participationObj = {
-            ...eventDetails,
+            ...regDetails,
             payment_id: payment_id || '',
             eventObj: {
-                id: eventDetails.eventObj.id,
-                name: eventDetails.eventObj.name,
-                payment_enabled: eventDetails.eventObj.payment_enabled,
-                part_amt: eventDetails.eventObj.part_amt,
-                is_reg_open: eventDetails.eventObj.is_reg_open,
-                emeeting_link: eventDetails.eventObj.emeeting_link,
-                can_register: eventDetails.eventObj.can_register,
-                e_time: eventDetails.eventObj.e_time,
-                e_date: eventDetails.eventObj.e_date,
+                id: regDetails.eventObj.id,
+                name: regDetails.eventObj.name,
+                payment_enabled: regDetails.eventObj.payment_enabled,
+                part_amt: regDetails.eventObj.part_amt,
+                is_reg_open: regDetails.eventObj.is_reg_open,
+                emeeting_link: regDetails.eventObj.emeeting_link,
+                can_register: regDetails.eventObj.can_register,
+                e_time: regDetails.eventObj.e_time,
+                e_date: regDetails.eventObj.e_date,
             }
 
         };
 
         createParticipation(participationObj, (registration) => {
-            const event = { ...eventDetails, participation: registration };
+            const participant = eventDetails.participant || [];
+            participant.push(registration);
+            const event = { ...eventDetails, participant };
             const upcomingEvents = [...events.upcomingEvents];
             const eventIndex = upcomingEvents.findIndex((i) => i.id === event.id);
             upcomingEvents.splice(eventIndex, 1);
@@ -133,34 +135,34 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
 
     const handleFinish = (res) => {
         setIsLoading(true);
-        const eventDetails = { ...createEventForm, ...res };
+        const regDetails = { ...createEventForm, ...res };
         // const eventId= eventDetails.event.split('/')[2];
         // const userId= eventDetails.user.split('/')[2];
         // const order_id = `order_${userId}`;
         // Payment Happens Here
-        if (eventDetails.eventObj.payment_enabled) {
-            makePayment(eventDetails);
+        if (regDetails.eventObj.payment_enabled) {
+            makePayment(regDetails);
         } else {
-            createParticipationCall(eventDetails);
+            createParticipationCall(regDetails);
         }
     };
 
-    const createAudienceCall = (eventDetails, payment_id) =>{
+    const createAudienceCall = (regDetails, payment_id) =>{
         const audienceObj = {
-            ...eventDetails,
-            event: `/events/${eventDetails.eventObj.id}`,
-            user: `/users/${eventDetails.userObj.id}`,
+            ...regDetails,
+            event: `/events/${regDetails.eventObj.id}`,
+            user: `/users/${regDetails.userObj.id}`,
             payment_id: payment_id || '',
             eventObj: {
-                id: eventDetails.eventObj.id,
-                name: eventDetails.eventObj.name,
-                payment_enabled: eventDetails.eventObj.payment_enabled,
-                part_amt: eventDetails.eventObj.part_amt,
-                is_reg_open: eventDetails.eventObj.is_reg_open,
-                emeeting_link: eventDetails.eventObj.emeeting_link,
-                can_register: eventDetails.eventObj.can_register,
-                e_time: eventDetails.eventObj.e_time,
-                e_date: eventDetails.eventObj.e_date,
+                id: regDetails.eventObj.id,
+                name: regDetails.eventObj.name,
+                payment_enabled: regDetails.eventObj.payment_enabled,
+                part_amt: regDetails.eventObj.part_amt,
+                is_reg_open: regDetails.eventObj.is_reg_open,
+                emeeting_link: regDetails.eventObj.emeeting_link,
+                can_register: regDetails.eventObj.can_register,
+                e_time: regDetails.eventObj.e_time,
+                e_date: regDetails.eventObj.e_date,
             }
 
         };

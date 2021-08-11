@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { MDBBtn, MDBCard, MDBCardHeader, MDBCardBody, MDBCardText, MDBCardFooter } from "mdbreact";
 
-const PollSummary = () => {
+const PollSummary = ({parameters}) => {
     const [pastPollsChartData, setPastPollsChartData] = useState();
 
     useEffect(() => {
@@ -10,7 +10,7 @@ const PollSummary = () => {
             labels: ["Good", "Very Good", "Excellent"],
             datasets: [
                 {
-                    data: [8, 12],
+                    data: [parameters.poll_good, parameters.poll_vgood, parameters.poll_excel],
                     backgroundColor: ["#FDB45C", "#949FB1", "#4D5360"],
                     hoverBackgroundColor: [
                         "#FFC870",
@@ -20,7 +20,7 @@ const PollSummary = () => {
                 }
             ]
         });
-    }, []);
+    }, [parameters]);
 
     return (
         <MDBCard>

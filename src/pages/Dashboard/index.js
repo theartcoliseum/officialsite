@@ -32,9 +32,9 @@ const Dashboard = () => {
         const formattedDate = `${eventD.e_date.toDate().toLocaleDateString()} ${eventD.e_time}`;
         // Check if the event is being participated in event
         let participant = false;
-        if(event.participant) {
+        if (event.participant) {
           const myParticipant = event.participant.findIndex((i) => i.userObj.id === user.id);
-          if(myParticipant !== -1) {
+          if (myParticipant !== -1) {
             participant = true;
           }
         }
@@ -68,12 +68,11 @@ const Dashboard = () => {
         const formattedDate = `${eventD.e_date.toDate().toLocaleDateString()} ${eventD.e_time}`;
         return {
           datetime: formattedDate,
-          name: event.name,
-          type: event.type,
-          eventObj: event
+          ...eventD
         };
       });
       tempEvents = tempEvents.sort((a, b) => a.dateTime > b.dateTime);
+      console.log(tempEvents);
       setPastEvents(tempEvents);
     }
   }, [events.pastEventsParticipated]);
@@ -91,18 +90,20 @@ const Dashboard = () => {
           <MDBCol lg="4" md="4" className="mb-lg-0 mb-5">
             <NextEvent nextDate={nextDate} />
           </MDBCol>
-          <MDBCol lg="4" md="4" className="mb-lg-0 mb-5">
-            <EventsSummary />
-          </MDBCol>
-          <MDBCol lg="4" md="4" className="mb-lg-0 mb-5">
-            <PollSummary />
+          <MDBCol lg="8" md="8" className="mb-lg-0 mb-5">
+            <UpcomingEvents upcomingEvents={upcomingEvents} registerEventFn={registerEventFn} />
           </MDBCol>
         </MDBRow>
         <MDBRow>
           <MDBCol lg="6" md="6" className="mb-lg-0 mb-5">
-            <UpcomingEvents upcomingEvents={upcomingEvents} registerEventFn={registerEventFn} />
+            <EventsSummary parameters={events.parameters}  />
           </MDBCol>
           <MDBCol lg="6" md="6" className="mb-lg-0 mb-5">
+            <PollSummary parameters={events.parameters} />
+          </MDBCol>
+        </MDBRow>
+        <MDBRow>
+          <MDBCol className="mb-lg-0 mb-5">
             <PastAttendedEvents pastEvents={pastEvents} />
           </MDBCol>
         </MDBRow>

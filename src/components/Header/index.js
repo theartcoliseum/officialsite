@@ -76,6 +76,10 @@ const Header = () => {
         history.replace('/protected');
     }
 
+    const goToConfig = () =>{
+        history.replace('/protected/config');
+    }
+
     const logoutCallback = () => {
         setUser(null);
         history.push('/');
@@ -157,6 +161,7 @@ const Header = () => {
                                             <MDBDropdownItem onClick={goToHome}>Home</MDBDropdownItem>
                                         <MDBDropdownItem onClick={gotoDashboard}>My Dashboard</MDBDropdownItem>
                                         <MDBDropdownItem onClick={gotoAdminDashboard}>Admin Dashboard</MDBDropdownItem>
+                                        <MDBDropdownItem onClick={goToConfig}>Admin Config</MDBDropdownItem>
                                         <MDBDropdownItem divider />
                                         <MDBDropdownItem onClick={() => signout(logoutCallback)}>Logout</MDBDropdownItem>
                                         </Fragment>

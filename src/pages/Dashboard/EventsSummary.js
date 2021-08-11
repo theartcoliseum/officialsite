@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { MDBBtn, MDBCard, MDBCardHeader, MDBCardBody, MDBCardText, MDBCardFooter } from "mdbreact";
 
-const EventSummary = () => {
+const EventSummary = ({parameters}) => {
     const [eventsChartData, setEventsChartData] = useState();
 
     useEffect(() => {
+        const total = parameters.partCount + parameters.audienceCount;
+        const participated = (parameters.partCount / total) * 100;
+        const attended = (parameters.audienceCount / total) * 100;
         setEventsChartData({
               labels: ["Performed", "Attended"],
               datasets: [
                 {
-                  data: [8, 12],
+                  data: [participated, attended],
                   backgroundColor: ["#FDB45C", "#46BFBD"],
                   hoverBackgroundColor: [
                     "#FF5A5E",
@@ -19,7 +22,7 @@ const EventSummary = () => {
                 }
               ]
           });
-    }, []);
+    }, [parameters]);
 
     return (
         <MDBCard>

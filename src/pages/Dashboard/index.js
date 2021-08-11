@@ -68,12 +68,11 @@ const Dashboard = () => {
         const formattedDate = `${eventD.e_date.toDate().toLocaleDateString()} ${eventD.e_time}`;
         return {
           datetime: formattedDate,
-          name: event.name,
-          type: event.type,
-          eventObj: event
+          ...eventD
         };
       });
       tempEvents = tempEvents.sort((a, b) => a.dateTime > b.dateTime);
+      console.log(tempEvents);
       setPastEvents(tempEvents);
     }
   }, [events.pastEventsParticipated]);
@@ -97,10 +96,10 @@ const Dashboard = () => {
         </MDBRow>
         <MDBRow>
           <MDBCol lg="6" md="6" className="mb-lg-0 mb-5">
-            <EventsSummary />
+            <EventsSummary parameters={events.parameters}  />
           </MDBCol>
           <MDBCol lg="6" md="6" className="mb-lg-0 mb-5">
-            <PollSummary />
+            <PollSummary parameters={events.parameters} />
           </MDBCol>
         </MDBRow>
         <MDBRow>

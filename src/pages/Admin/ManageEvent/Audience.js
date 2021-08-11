@@ -34,7 +34,7 @@ const AudienceList = ({ audiencelist }) => {
                         {(!audienceDetails || audienceDetails.length === 0) && (
                             <tr>
                                 <td colSpan="2">
-                                    No participants Registered for this event
+                                    No audience registered for this event
                                     </td>
                             </tr>
                         )}

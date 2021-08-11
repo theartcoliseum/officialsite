@@ -34,7 +34,7 @@ const validationSchema = yup.object().shape({
         .required("Event Date is mandatory")
 });
 
-const EventDetails = ({ eventDetails }) => {
+const EventDetails = ({ eventDetails, mode }) => {
     const [posterImgBig, setPosterImgBig] = useState(false);
     const [posterImgSmall, setPosterImgSmall] = useState(false);
     const { events, setEvents } = useContext(EventContext);
@@ -49,13 +49,13 @@ const EventDetails = ({ eventDetails }) => {
             e_time: eventDetails ? new Date('1970-01-01T' + eventDetails.e_time) : (new Date()).getTime(),
             can_register: eventDetails ? eventDetails.can_register : false,
             is_reg_open: eventDetails ? eventDetails.is_reg_open : false,
-            poster_link_big: eventDetails ? eventDetails.poster_link_big : '',
-            poster_link_small: eventDetails ? eventDetails.poster_link_small : '',
-            emeeting_link: eventDetails ? eventDetails.emeeting_link : '',
-            tc: eventDetails ? eventDetails.tc : '',
-            payment_enabled: eventDetails ? eventDetails.payment_enabled : false,
-            part_amt: eventDetails ? eventDetails.part_amt : 0,
-            audience_amt: eventDetails ? eventDetails.audience_amt : 0,
+            poster_link_big: (eventDetails && eventDetails.poster_link_big) ? eventDetails.poster_link_big : '',
+            poster_link_small: (eventDetails && eventDetails.poster_link_small) ? eventDetails.poster_link_small : '',
+            emeeting_link: (eventDetails && eventDetails.emeeting_link) ? eventDetails.emeeting_link : '',
+            tc: (eventDetails && eventDetails.tc) ? eventDetails.tc : '',
+            payment_enabled: (eventDetails && eventDetails.payment_enabled) ? eventDetails.payment_enabled : false,
+            part_amt: (eventDetails && eventDetails.part_amt) ? eventDetails.part_amt : 0,
+            audience_amt: (eventDetails && eventDetails.audience_amt) ? eventDetails.audience_amt : 0,
             poster_big: null,
             poster_small: null
         },
@@ -117,14 +117,14 @@ const EventDetails = ({ eventDetails }) => {
                 <div className="grey-text">
                     <MDBRow>
                         <MDBCol>
-                            <MDBInput label="Event Name" icon="calendar-check" group type="text" name="name" onChange={createFormik.handleChange}
+                            <MDBInput disabled={mode==='past'} label="Event Name" icon="calendar-check" group type="text" name="name" onChange={createFormik.handleChange}
                                 value={name} validate />
                             <div className="validation-error">
                                 {(createFormik.errors.name && createFormik.touched.name) ? createFormik.errors.name : null}
                             </div>
                         </MDBCol>
                         <MDBCol>
-                            <MDBInput label="Event Type" icon="calendar-day" group type="text" validate name="type" onChange={createFormik.handleChange}
+                            <MDBInput disabled={mode==='past'} label="Event Type" icon="calendar-day" group type="text" validate name="type" onChange={createFormik.handleChange}
                                 value={type} />
                             <div className="validation-error">
                                 {(createFormik.errors.type && createFormik.touched.type) ? createFormik.errors.type : null}
@@ -134,14 +134,14 @@ const EventDetails = ({ eventDetails }) => {
                     <MDBRow>
                         <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
                             <MDBCol>
-                                <DatePicker label="Event Date" name="e_date" value={e_date} onChange={value => createFormik.setFieldValue('e_date', value)} format="DD/MM/YYYY"
+                                <DatePicker disabled={mode==='past'} label="Event Date" name="e_date" value={e_date} onChange={value => createFormik.setFieldValue('e_date', value)} format="DD/MM/YYYY"
                                     animateYearScrolling autoOk />
                                 <div className="validation-error">
                                     {(createFormik.errors.e_date && createFormik.touched.e_date) ? createFormik.errors.e_date : null}
                                 </div>
                             </MDBCol>
                             <MDBCol>
-                                <TimePicker label="Event Time" name="e_time" showTodayButton value={e_time} onChange={value => createFormik.setFieldValue('e_time', value)} />
+                                <TimePicker disabled={mode==='past'} label="Event Time" name="e_time" showTodayButton value={e_time} onChange={value => createFormik.setFieldValue('e_time', value)} />
                                 <div className="validation-error">
                                     {(createFormik.errors.e_time && createFormik.touched.e_time) ? createFormik.errors.e_time : null}
                                 </div>
@@ -150,6 +150,7 @@ const EventDetails = ({ eventDetails }) => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
+                                            disabled={mode==='past'}
                                             checked={can_register}
                                             onChange={(e) => createFormik.setFieldValue('can_register', e.target.checked)}
                                             name="can_register"
@@ -166,6 +167,7 @@ const EventDetails = ({ eventDetails }) => {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
+                                            disabled={mode==='past'}
                                             checked={is_reg_open === true}
                                             value={is_reg_open}
                                             onChange={(e) => createFormik.setFieldValue('is_reg_open', e.target.checked)}
@@ -199,6 +201,7 @@ const EventDetails = ({ eventDetails }) => {
                                         <MDBRow>
                                             <MDBCol>
                                                 <MDBBtn
+                                                    disabled={mode==='past'}
                                                     variant="contained"
                                                     color="elegant"
                                                     type="button"
@@ -253,6 +256,7 @@ const EventDetails = ({ eventDetails }) => {
                                         <MDBRow>
                                             <MDBCol>
                                                 <MDBBtn
+                                                    disabled={mode==='past'}
                                                     variant="contained"
                                                     color="elegant"
                                                     type="button"
@@ -294,7 +298,7 @@ const EventDetails = ({ eventDetails }) => {
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
-                            <MDBInput label="Meeting Link" icon="external-link-alt" group type="text" name="emeeting_link" onChange={createFormik.handleChange}
+                            <MDBInput disabled={mode==='past'} label="Meeting Link" icon="external-link-alt" group type="text" name="emeeting_link" onChange={createFormik.handleChange}
                                 value={emeeting_link} validate />
                             <div className="validation-error">
                                 {(createFormik.errors.emeeting_link && createFormik.touched.emeeting_link) ? createFormik.errors.emeeting_link : null}
@@ -304,6 +308,7 @@ const EventDetails = ({ eventDetails }) => {
                     <MDBRow>
                         <MDBCol>
                             <ReactQuill name="tc" value={tc}
+                                disabled={mode==='past'}
                                 onChange={(value) => createFormik.setFieldValue('tc', value)}
                                 modules={modules}
                                 formats={formats} />
@@ -314,6 +319,7 @@ const EventDetails = ({ eventDetails }) => {
                             <FormControlLabel
                                 control={
                                     <Checkbox
+                                        disabled={mode==='past'}
                                         checked={payment_enabled}
                                         onChange={(e) => createFormik.setFieldValue('payment_enabled', e.target.checked)}
                                         name="payment_enabled"
@@ -326,11 +332,11 @@ const EventDetails = ({ eventDetails }) => {
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
-                            <MDBInput label="Participant Amount" icon="calendar-day" group type="text" validate name="part_amt" onChange={createFormik.handleChange}
+                            <MDBInput disabled={mode==='past'} label="Participant Amount" icon="calendar-day" group type="text" validate name="part_amt" onChange={createFormik.handleChange}
                                 value={part_amt} />
                         </MDBCol>
                         <MDBCol>
-                            <MDBInput label="Audience Amount" icon="calendar-day" group type="text" validate name="audience_amt" onChange={createFormik.handleChange}
+                            <MDBInput disabled={mode==='past'} label="Audience Amount" icon="calendar-day" group type="text" validate name="audience_amt" onChange={createFormik.handleChange}
                                 value={audience_amt} />
                         </MDBCol>
                     </MDBRow>
@@ -340,6 +346,7 @@ const EventDetails = ({ eventDetails }) => {
                             variant="contained"
                             color="elegant"
                             type="submit"
+                            disabled={mode==='past'}
                         >
                             Save
                         </MDBBtn>

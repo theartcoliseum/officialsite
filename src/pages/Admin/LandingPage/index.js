@@ -4,9 +4,10 @@ import CreateEvent from '../CreateEvent';
 import UpcomingEvents from "./upcomingEvents";
 import PastEventsPage from "./pastEventsPage";
 import { EventContext } from '../../../context/EventContext';
-
+import { useHistory, useLocation } from 'react-router-dom';
 
 const AdminLanding = () => {
+    let history = useHistory();
     const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
     const [upcomingEvents, setUpcomingEvents] = useState([]);
     const [pastEvents, setPastEvents] = useState([]);

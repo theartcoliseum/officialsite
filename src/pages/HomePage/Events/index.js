@@ -1,54 +1,111 @@
-import React from "react";
-import { MDBCarousel, MDBCarouselInner, MDBCarouselItem, MDBView, MDBContainer } from
+import React, { useState, useContext, useEffect } from "react";
+import { MDBCarousel, MDBCarouselInner, MDBCarouselItem, MDBView, MDBContainer, MDBRow, MDBCol, MDBModal, MDBBtn } from
   "mdbreact";
+import firebase from "firebase/app";
+import Login from '../../../components/Login'
+import RegisterEvent from '../../RegisterEvent'
+import { AuthContext } from '../../../context/AuthContext';
 
-const Events = () => {
+const Events = ({ eventlist }) => {
+
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [registerModalData, setRegisterModalData] = useState(null);
+  const [isCreateEventModalOpen, setIsCreateEventModalOpen] = useState(false);
+  const [allEvents, setAllEvents] = useState([]);
+
+  const { user, setUser, setIsLoading } = useContext(AuthContext);
+
+
+  const registerEvent = function (i,j) {
+    const eventConsidered = allEvents[i][j];
+    setRegisterModalData(eventConsidered);
+    if (eventConsidered.is_reg_open) {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        setIsCreateEventModalOpen(true);
+      }
+      else {
+        setIsLoginModalOpen(true);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (eventlist && eventlist.length > 0) {
+      const length = eventlist.length;
+      const groupedEvents = [];
+      for (let i = 0; i < length;) {
+        const group = [];
+        if (eventlist[i]) {
+          group.push(eventlist[i]);
+        }
+        if(window.innerWidth<600){
+          groupedEvents.push(group);
+          i++;
+          continue;
+        }
+        if (eventlist[i + 1]) {
+          group.push(eventlist[i + 1]);
+        }
+        if (eventlist[i + 2]) {
+          group.push(eventlist[i + 2]);
+        }
+        i = i + 3;
+        groupedEvents.push(group);
+      }
+      setAllEvents(groupedEvents);
+    }
+  }, [eventlist]);
+
+
   return (
     <div className="parallax-section" id="events">
-      <MDBContainer>
-        <h1>The Art Coliseum</h1>
-        <h4>Family of Artists</h4>
+      <MDBContainer className="homepage-title">
+        <h1>Upcoming Events</h1>
       </MDBContainer>
       <MDBContainer>
-        <MDBCarousel
+        {!allEvents || allEvents.length == 0 && (
+          <h2 class="no-events">No Events Coming Up!</h2>
+        )}
+        {allEvents && allEvents.length > 0 && (<MDBCarousel
           activeItem={1}
-          length={3}
-          showControls={true}
-          showIndicators={true}
+          length={allEvents.length}
+          slide={true} showControls={true} showIndicators={true}
           className="z-depth-1"
-          slide
         >
           <MDBCarouselInner>
-            <MDBCarouselItem itemId="1">
-              <MDBView>
-                <img
-                  className="d-block w-100 img-fluid"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(130).jpg"
-                  alt="First slide"
-                />
-              </MDBView>
-            </MDBCarouselItem>
-            <MDBCarouselItem itemId="2">
-              <MDBView>
-                <img
-                  className="d-block w-100 img-fluid"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(129).jpg"
-                  alt="Second slide"
-                />
-              </MDBView>
-            </MDBCarouselItem>
-            <MDBCarouselItem itemId="3">
-              <MDBView>
-                <img
-                  className="d-block w-100 img-fluid"
-                  src="https://mdbootstrap.com/img/Photos/Slides/img%20(70).jpg"
-                  alt="Third slide"
-                />
-              </MDBView>
-            </MDBCarouselItem>
+            {allEvents && allEvents.map((group, i) => (
+              <MDBCarouselItem itemId={i + 1}>
+                <MDBView>
+                  <MDBRow>
+                    {group && group.map((event, j) => (
+                      <MDBCol md="4" sm="12">
+                        {event.poster_link_small && (
+                          <img
+                            onClick={() => registerEvent(i,j)}
+                            title="Click to Register"
+                            className="d-block w-100 img-fluid carousel-img"
+                            src={event.poster_link_small}
+                            alt={event.name}
+                          />
+                        )}
+                      </MDBCol>
+                    ))}
+
+                  </MDBRow>
+                </MDBView>
+              </MDBCarouselItem>
+            ))}
           </MDBCarouselInner>
         </MDBCarousel>
+        )}
       </MDBContainer>
+      <MDBModal isOpen={isLoginModalOpen} centered>
+        <Login setUser={setUser} setIsLoading={setIsLoading} close={() => { setIsLoginModalOpen(false); }} />
+      </MDBModal>
+      <MDBModal id="register-event-modal" isOpen={isCreateEventModalOpen} centered>
+        <RegisterEvent userDetails={user} eventDetails={registerModalData} close={() => { setIsCreateEventModalOpen(false); }} />
+      </MDBModal>
     </div>
   );
 }

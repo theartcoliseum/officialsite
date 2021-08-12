@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState } from "react";
 
 const AuthContext = createContext();
 
@@ -13,22 +13,13 @@ function AuthContextCreator({ children }) {
 
 function useProvideAuth() {
     const [user, setUser] = useState(null);
-
-    useEffect(() => {
-    }, [user]);
-
-    const signin = () => {
-        setUser({ username: 'Suvechhya', isLoggedIn: true});
-    };
-
-    const signout = () => {
-        setUser(null);
-    };
+    const [isLoading, setIsLoading] = useState(false);
 
     return {
         user,
-        signin,
-        signout
+        setUser,
+        isLoading,
+        setIsLoading
     };
 }
 

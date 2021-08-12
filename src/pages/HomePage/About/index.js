@@ -1,23 +1,46 @@
-import React from "react";
-import { MDBBtn, MDBJumbotron, MDBContainer } from "mdbreact";
+import React , { useState , useEffect ,useContext} from "react";
+import { MDBBtn, MDBJumbotron, MDBContainer, MDBRow, MDBCol } from "mdbreact";
+import {getAboutUsData} from '../../../firebase/firebase.db';
+import { AuthContext } from '../../../context/AuthContext';
+
 
 const About = () => {
+
+  const [aboutUsData,setAboutData] = useState('');
+  const {setIsLoading} = useContext(AuthContext);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getAboutData();
+  }, []);
+
+  const getAboutData = () =>{
+    getAboutUsData(successCallBackAboutUs);
+  }
+
+  function successCallBackAboutUs(data){
+    setAboutData(data);
+    setIsLoading(false);
+  }
+
   return (
     <div className="parallax-section" id="about">
       <MDBContainer>
-        <MDBJumbotron>
-          <h1 className="h1-responsive">About Us</h1>
-          <p className="lead">
-            Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit
-    </p>
-          <hr className="my-2" />
-          <p>
-          Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor SitLorem Ispum Dolor SitLorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit Lorem Ispum Dolor Sit
-    </p>
-          <MDBBtn color="elegant" size="lg">
-            Learn more
+        <MDBRow>
+          
+          <MDBCol md="6" sm="12">
+            <MDBJumbotron>
+              <h1 className="h1-responsive">The Art Coliseum</h1>
+              <p className="lead">{aboutUsData}</p>
+              <hr className="my-2" />
+              <MDBBtn color="elegant" size="lg">
+                Learn more
     </MDBBtn>
-        </MDBJumbotron>
+            </MDBJumbotron>
+          </MDBCol>
+          <MDBCol></MDBCol>
+        </MDBRow>
+
       </MDBContainer>
     </div>
   );

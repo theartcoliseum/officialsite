@@ -6,7 +6,9 @@
 }
 .parallax-section {
     padding-top: 5%;
+    
     min-height: 95vh;
+    padding-bottom: 50px;
     .container {
         max-width: 80%;
         padding-top: 1%;
@@ -14,19 +16,6 @@
             font-family: 'Abril Fatface', cursive;
             color: #fff3e0;
         }
-    }
-}
-
-#about{
-    padding-top: 10%;
-    .jumbotron {
-        background-color: rgba(255,255,255,0.2);
-    }
-}
-
-#team{
-    .card {
-        background-color: rgba(255,255,255,0.2);
     }
 }
 
@@ -53,4 +42,289 @@
 
 .btn-link:hover{
     color: #2e2e2e;
+}
+
+.row{
+    margin-bottom: 20px;
+}
+
+#site-logo{
+    width: 150px;
+}
+
+#events{
+    
+    background-image: url('../images/3.jpg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    .homepage-title{
+        margin-top: 50px;
+    }
+    .carousel-img{
+        height: 50vh;
+        cursor: pointer;
+    }
+    .carousel{
+        .carousel-indicators{
+            bottom: -50px;
+            li{
+                width: 20px;
+                height: 20px;
+            }
+        }
+        .carousel-control-prev{
+            left: -10rem;
+        }
+        .carousel-control-next{
+            right: -10rem;
+        }
+        .carousel-control-prev-icon, .carousel-control-next-icon{
+            width: 5rem;
+            height: 5rem;
+        }
+    }
+    .no-events{
+        color: #2e2e2e;
+        text-align: center;
+        background-color: rgba(255,255,255,0.8);
+        padding: 20px;
+    }
+}
+
+#services{
+    h1{
+        font-family: 'Abril Fatface', cursive;
+        color: #2e2e2e;
+    }
+    background-image: url('../images/4.png');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+#about{
+    h1{
+        font-family: 'Abril Fatface', cursive;
+        color: #2e2e2e;
+    }
+    background-image: url('../images/1.jpeg');
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    padding-top: 10%;
+    .jumbotron {
+        background-color: rgba(255,255,255,0.5);
+    }
+}
+
+#team{
+    background-image: url('../images/2.jpeg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    .card {
+        background-color: rgba(255,255,255,0.5);
+    }
+}
+
+#admin {
+    margin-top: 50px;
+}
+
+#dashboard{
+    padding-top: 7%;
+    
+    .card-body {
+        min-height: 27vh;
+    }
+
+    .table-container{
+        height: 30vh;
+    }
+
+    .next-event{
+        .card-body{
+            h1{
+                color: #000;
+                font-size: 4em;
+                display: inline-block;
+            }
+            h2{
+                font-size: 3.5em;
+                display: inline-block;
+            }
+        }
+        
+    }
+}
+
+#manage {
+    margin-top: 50px;
+    .form-paper{
+        padding: 30px;
+
+        .poster-preview{
+            height: 100%;
+            width: 50%;
+        }
+    }
+}
+
+#participant{
+    .button-row{
+        margin-bottom: 30px;
+    }
+    .container{
+        max-width: 100%;
+        height: 60vh;
+        .table-responsive{
+            height: 50vh;
+        }
+        td, th {
+            text-align: center;
+        }
+        .upload-btn-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            top: 24px;
+          }
+          
+          .upload-btn-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+          }
+          .poll-btn{
+              padding: 5px!important;
+              .fa {
+                  margin: 0!important;
+                  font-size:2em;
+              }
+          }
+
+    }
+}
+
+.card{
+        height: 100% !important;
+        .card-body{
+            height:100% !important;
+            .card-text{
+                height: 100% !important;
+                .table-wrapper-scroll-y{
+                    max-height: 100% !important;
+                }
+            }
+        }
+    }
+
+.validation-error{
+    font-size: 12px;
+    color: lightcoral;
+    text-align: center;
+}
+
+#error-toast {
+    visibility: hidden;
+    background-color: lightcoral;
+    color: black;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: absolute;
+    z-index: 9999999;
+    top:4%;
+    left:50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .md-form{
+      margin-bottom: 0px !important;
+  }
+  .form-control{
+    margin-bottom: 10px !important;
+  }
+  
+  /* Show the snackbar when clicking on a button (class added with JavaScript) */
+  #error-toast.show {
+    visibility: visible; /* Show the snackbar */
+  }
+
+  #create-event-modal{
+      .modal-dialog{
+          max-width: 1000px;
+          .stepper-body{
+              padding: 5px 40px;
+          }
+      }
+  }
+
+  #register-event-modal{
+    .modal-dialog{
+        max-width: 1000px;
+        .stepper-body{
+            padding: 5px 40px;
+        }
+    }
+}
+
+  .overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255,255,255, 0.5);
+    z-index: 1051;
+    .spinner-border {
+        position: relative;
+        top: 50%;
+        left: 50%;
+    }
+  }
+  .pointer-none{
+      pointer-events: none;
+  }
+  .event-name{
+      color: #2e2e2e !important ;
+  }
+  .register-pg-title{
+      background-color: rgba(0,0,0,0.5);
+      padding: 10px;
+      color: #fff;
+    font-size: 24px !important;
+  }
+  .event-title-bold{
+      font-weight: bold;
+      font-size: 16px;
+      color:#45526e   
+  }
+.buttons-row{
+    padding-left: 5px;
+}
+
+  @media only screen and (max-width: 600px) {
+    .homepage-title{
+        max-width: none !important;
+
+    }
+    .carousel-control-prev{
+        left: -2.5rem !important;
+    }
+    .carousel-control-next{
+        right: -2.5rem !important;
+    }
+    .carousel-control-prev-icon, .carousel-control-next-icon{
+        width: 2rem;
+        height: 2rem;
+    }
+    #about{
+        .container{
+            padding-top: 100px;
+        }
+    }
 }

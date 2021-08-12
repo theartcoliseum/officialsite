@@ -41,6 +41,7 @@ const Header = () => {
 
 
     useEffect(() => {
+        console.log(location);
         if (location && location.pathname) {
             const paths = location.pathname.split('/');
             if (paths.length > 2) {

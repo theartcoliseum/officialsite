@@ -24,8 +24,7 @@ const Page1 = ({ handleBack, eventDetails, handleNext, userDetails }) => {
                 <span className="event-title-bold">Event Time</span>
                 </MDBCol>
                 <MDBCol lg="3" md="6">
-                    {/* {new Date(eventDetails.datetime.seconds * 1000).toUTCString()} */}
-                    11:11 AM
+                    {eventDetails.e_time}
                 </MDBCol>
                 
             </MDBRow>

@@ -54,7 +54,7 @@ const UpcomingEvents = ({ upcomingEvents, registerEventFn }) => {
                                     <td>{event.name}</td>
                                     <td>{event.type}</td>
                                     <td>{event.payment_status}</td>
-                            <td>{event.can_register && <MDBBtn color="elegant" size="sm" disabled={!event.is_reg_open || event.participant} onClick={() => {registerEventFn(event.eventObj)}}>{event.participant? 'Registered': 'Register'}</MDBBtn>}</td>
+                            <td>{event.can_register && <MDBBtn color="elegant" size="sm" disabled={!event.is_reg_open || event.participant || event.audience} onClick={() => {registerEventFn(event.eventObj)}}>{event.participant? 'Registered': 'Register'}</MDBBtn>}</td>
                                 </tr>
                             ))}
                         </MDBTableBody>

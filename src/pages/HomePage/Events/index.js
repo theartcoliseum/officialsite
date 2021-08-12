@@ -6,8 +6,10 @@ import firebase from "firebase/app";
 import Login from '../../../components/Login'
 import RegisterEvent from '../../RegisterEvent'
 import { AuthContext } from '../../../context/AuthContext';
+import { EventContext } from '../../../context/EventContext';
+import handleApiError from '../../../util/ErrorHandler';
 
-const Events = ({ eventlist }) => {
+const Events = () => {
 
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [registerModalData, setRegisterModalData] = useState(null);
@@ -15,9 +17,47 @@ const Events = ({ eventlist }) => {
   const [allEvents, setAllEvents] = useState([]);
 
   const { user, setUser, setIsLoading } = useContext(AuthContext);
+  const {events, setEvents} = useContext(EventContext);
   let { id } = useParams();
+  const [hitEvent, setHitEvent] = useState(null);
+  const [displayedEvents, setDisplayedEvents] = useState([]);
 
-  useParams(() => {}, [id]);
+  useEffect(() => {
+    if(id) {
+      setHitEvent(id);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if(events && events.eventToBeOpened) {
+      let registered = false;
+      const participants = events.eventToBeOpened.participant;
+      const audiences = events.eventToBeOpened.audience;
+      if(participants) {
+        const index = participants.findIndex((i) => i.userObj.id === user.id);
+        if(index >=0) {
+          registered = true;
+        }
+      }
+      if(audiences) {
+        const index = audiences.findIndex((i) => i.userObj.id === user.id);
+        if(index >=0) {
+          registered = true;
+        }
+      }
+      if(!registered) {
+        registerEventByEvent(events.eventToBeOpened);
+      }else {
+        handleApiError({message: 'You are already Registered for this event!'});
+      }    
+    }
+  }, []);
+
+  useEffect(() => {
+    if(events && events.upcomingEvents) {
+      setDisplayedEvents([...events.upcomingEvents]);
+    }
+  }, [events.upcomingEvents]);
 
   const registerEvent = function (i,j) {
     const eventConsidered = allEvents[i][j];
@@ -34,7 +74,7 @@ const Events = ({ eventlist }) => {
   };
 
   const registerEventByEvent = function (eventConsidered) {
-    setRegisterModalData(eventConsidered);
+    setEvents({...events, eventToBeOpened: eventConsidered});
     if (eventConsidered.is_reg_open) {
       const user = firebase.auth().currentUser;
       if (user) {
@@ -47,37 +87,41 @@ const Events = ({ eventlist }) => {
   };
 
   useEffect(() => {
-    if (eventlist && eventlist.length > 0) {
-      const length = eventlist.length;
+    if (displayedEvents && displayedEvents.length > 0) {
+      const length = displayedEvents.length;
       const groupedEvents = [];
       for (let i = 0; i < length;) {
         const group = [];
-        if (eventlist[i]) {
-          group.push(eventlist[i]);
+        if (displayedEvents[i]) {
+          group.push(displayedEvents[i]);
         }
         if(window.innerWidth<600){
           groupedEvents.push(group);
           i++;
           continue;
         }
-        if (eventlist[i + 1]) {
-          group.push(eventlist[i + 1]);
+        if (displayedEvents[i + 1]) {
+          group.push(displayedEvents[i + 1]);
         }
-        if (eventlist[i + 2]) {
-          group.push(eventlist[i + 2]);
+        if (displayedEvents[i + 2]) {
+          group.push(displayedEvents[i + 2]);
         }
         i = i + 3;
         groupedEvents.push(group);
       }
       setAllEvents(groupedEvents);
-      if(id) {
-        const eventConsidered = eventlist.find((i) => i.id === id);
+      if(hitEvent) {
+        const eventConsidered = displayedEvents.find((i) => i.id === hitEvent);
         if(eventConsidered) {
           registerEventByEvent(eventConsidered);
         }        
       }
     }
-  }, [eventlist]);
+  }, [displayedEvents]);
+
+  const closeRegisterModal = () => {
+    setIsCreateEventModalOpen(false);
+  };
 
 
   return (
@@ -87,7 +131,7 @@ const Events = ({ eventlist }) => {
       </MDBContainer>
       <MDBContainer>
         {!allEvents || allEvents.length == 0 && (
-          <h2 class="no-events">No Events Coming Up!</h2>
+          <h2 className="no-events">No Events Coming Up!</h2>
         )}
         {allEvents && allEvents.length > 0 && (<MDBCarousel
           activeItem={1}
@@ -123,10 +167,10 @@ const Events = ({ eventlist }) => {
         )}
       </MDBContainer>
       <MDBModal isOpen={isLoginModalOpen} centered>
-        <Login setUser={setUser} setIsLoading={setIsLoading} close={() => { setIsLoginModalOpen(false); }} />
+        <Login setUser={setUser} setIsLoading={setIsLoading} close={() => {}} />
       </MDBModal>
       <MDBModal id="register-event-modal" isOpen={isCreateEventModalOpen} centered>
-        <RegisterEvent userDetails={user} eventDetails={registerModalData} close={() => { setIsCreateEventModalOpen(false); }} />
+        <RegisterEvent userDetails={user} eventDetails={events.eventToBeOpened} close={closeRegisterModal} />
       </MDBModal>
     </div>
   );

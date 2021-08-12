@@ -266,7 +266,7 @@ const ManageParticipants = ({ participants, mode }) => {
                             <ExcelColumn label="Poll%(EXCELLENT)" value="poll_excel" />
                         </ExcelSheet>
                     </ExcelFile>
-                    {mode === 'past' && (<div class="upload-btn-wrapper">
+                    {mode === 'past' && (<div className="upload-btn-wrapper">
                         <MDBBtn
                             variant="contained"
                             color="elegant"

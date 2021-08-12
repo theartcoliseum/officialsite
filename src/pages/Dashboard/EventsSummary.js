@@ -34,9 +34,6 @@ const EventSummary = ({parameters}) => {
                 <Doughnut data={eventsChartData} options={{ responsive: true }} />
                 </MDBCardText>
             </MDBCardBody>
-            <MDBCardFooter>
-                <MDBBtn color="elegant">Check Details</MDBBtn>
-            </MDBCardFooter>
         </MDBCard>
     );
 }

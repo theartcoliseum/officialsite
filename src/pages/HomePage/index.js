@@ -11,7 +11,6 @@ const HomePage = () => {
 
   const {setIsLoading} = useContext(AuthContext);
   const {events, setEvents} = useContext(EventContext);
-  const [displayedEvents, setDisplayedEvents] = useState([]);
 
   useEffect(() => {
     if(!events.eventsLoaded) {
@@ -19,8 +18,6 @@ const HomePage = () => {
       getUpcomingEvents((event) => {
         const tempEvents = {...events};
         tempEvents.upcomingEvents = event;
-        
-        setDisplayedEvents([...event]);
         tempEvents.eventsLoaded = true;
         setEvents({...tempEvents });
         setIsLoading(false);
@@ -28,16 +25,10 @@ const HomePage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if(events && events.upcomingEvents) {
-      setDisplayedEvents([...events.upcomingEvents]);
-    }
-  }, [events.upcomingEvents]);
-
   return (
     <Fragment>
         <About />
-        <Events eventlist={displayedEvents} />
+        <Events />
         <Services />
         <Team />
     </Fragment>

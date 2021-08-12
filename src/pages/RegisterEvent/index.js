@@ -43,7 +43,7 @@ function getSteps() {
 const RegisterEvent = ({ close, eventDetails, userDetails }) => {
 
     const [createEventForm, setCreateEventForm] = useState({
-        event: `/events/${eventDetails.id}`,
+        event: `/events/${eventDetails ? eventDetails.id : ''}`,
         user: `/users/${userDetails.id}`,
     });
     const { events, setEvents } = useContext(EventContext);
@@ -63,6 +63,12 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
         setCreateEventForm({ ...createEventForm, ...res });
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
+
+    useEffect(() => {
+        if(!eventDetails) {
+
+        }
+    }, [eventDetails])
 
     const makePayment = (regDetails) => {
         var options = {
@@ -127,7 +133,7 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
             const eventIndex1 = upcomingEventsWithParticipation.findIndex((i) => i.id === event.id);
             upcomingEventsWithParticipation.splice(eventIndex1, 1);
             upcomingEventsWithParticipation.push(event);
-            setEvents({ ...events, upcomingEvents: upcomingEvents, upcomingEventsWithParticipation: upcomingEventsWithParticipation });
+            setEvents({ ...events, upcomingEvents: upcomingEvents, upcomingEventsWithParticipation: upcomingEventsWithParticipation, eventToBeOpened: null });
             setIsLoading(false);
         });
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -197,7 +203,7 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
                 upcomingEventsWithParticipation.push(event);
             }
             
-            setEvents({ ...events, upcomingEvents: upcomingEvents, upcomingEventsWithParticipation: upcomingEventsWithParticipation });
+            setEvents({ ...events, upcomingEvents: upcomingEvents, upcomingEventsWithParticipation: upcomingEventsWithParticipation, eventToBeOpened: null });
             setIsLoading(false);
             close();
         });

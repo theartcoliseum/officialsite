@@ -57,9 +57,6 @@ const NextEvent = ({ nextDate }) => {
                     </MDBRow>
                 </MDBCardText>
             </MDBCardBody>
-            <MDBCardFooter>
-                <MDBBtn color="elegant">Check Details</MDBBtn>
-            </MDBCardFooter>
         </MDBCard>
     );
 }

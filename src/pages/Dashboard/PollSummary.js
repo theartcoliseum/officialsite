@@ -32,9 +32,6 @@ const PollSummary = ({parameters}) => {
                     <Doughnut data={pastPollsChartData} options={{ responsive: true }} />
                 </MDBCardText>
             </MDBCardBody>
-            <MDBCardFooter>
-                <MDBBtn color="elegant">Check Details</MDBBtn>
-            </MDBCardFooter>
         </MDBCard>
     );
 }

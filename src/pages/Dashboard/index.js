@@ -38,6 +38,13 @@ const Dashboard = () => {
             participant = true;
           }
         }
+        let audience = false;
+        if (event.audience) {
+          const myParticipant = event.audience.findIndex((i) => i.userObj.id === user.id);
+          if (myParticipant !== -1) {
+            audience = true;
+          }
+        }
         return {
           datetime: formattedDate,
           name: event.name,
@@ -46,6 +53,7 @@ const Dashboard = () => {
           can_register: event.can_register,
           is_reg_open: event.is_reg_open,
           participant: participant,
+          audience,
           eventObj: event
         };
       });

@@ -223,6 +223,13 @@
             }
         }
     }
+    .poll-btn{
+        padding: 5px!important;
+        .fa {
+            margin: 0!important;
+            font-size:2em;
+        }
+    }
 
 .validation-error{
     font-size: 12px;
@@ -307,6 +314,42 @@
     padding-left: 5px;
 }
 
+.header-link{
+    height: 20px;
+    width: 20px;
+    margin: 10px !important;
+    a{
+        color: white;
+    }
+    
+}
+
+#certificate-test{
+    position: absolute;
+    top: 0;
+    left: 30%;
+}
+
+#certificate-wrapper{
+    height: 450px;
+    width: 800px;
+    background-image: url('../images/certificate.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    #name-div{
+        font-weight: 700;
+        position: absolute;
+        top: 168px;
+        left: 405px;
+    }
+    #date-div{
+        position: absolute;
+        top: 325px;
+        left: 130px;
+    }
+}
+
   @media only screen and (max-width: 600px) {
     .homepage-title{
         max-width: none !important;
@@ -325,6 +368,13 @@
     #about{
         .container{
             padding-top: 100px;
+        }
+    }
+    #register-event-modal{
+        .modal-dialog{
+            .stepper-body{
+                padding: 5px 0px;
+            }
         }
     }
 }

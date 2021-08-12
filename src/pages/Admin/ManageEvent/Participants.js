@@ -54,7 +54,7 @@ const ManageParticipants = ({ participants, mode }) => {
                     };
                 });
                 setFinalList(tempFinalList);
-                
+
             };
             setParticipantDetails(refinedParticipants);
         }
@@ -172,7 +172,7 @@ const ManageParticipants = ({ participants, mode }) => {
         updateParticipationList(apiParticipantsDetails, (list) => {
             const eventId = list[0].eventObj.id;
             // Update Context
-            if(mode !== 'past') {
+            if (mode !== 'past') {
                 const upcomingEvents = [...events.upcomingEvents];
                 const index = upcomingEvents.findIndex((i) => i.id === eventId);
                 upcomingEvents[index].participant = list;
@@ -181,9 +181,9 @@ const ManageParticipants = ({ participants, mode }) => {
                 const pastEvents = [...events.pastAllEvents];
                 const index = pastEvents.findIndex((i) => i.id === eventId);
                 pastEvents[index].participant = list;
-                setEvents({ ...events, pastAllEvents:pastEvents });
+                setEvents({ ...events, pastAllEvents: pastEvents });
             }
-            
+
             setIsLoading(false);
             history.push('/protected/admin');
         })
@@ -287,6 +287,8 @@ const ManageParticipants = ({ participants, mode }) => {
                             {mode !== 'past' && (<th>Accept Audition</th>)}
                             {mode !== 'past' && (<th>Reject Candidate</th>)}
                             {mode !== 'past' && (<th>Rejection Reason</th>)}
+                            {mode !== 'past' && (<th>Payment Type</th>)}
+                            {mode !== 'past' && (<th>Payment Reciept</th>)}
                             {mode === 'past' && (<th>Attendance</th>)}
                             {mode === 'past' && (<th>Poll Details</th>)}
                         </tr>
@@ -312,7 +314,6 @@ const ManageParticipants = ({ participants, mode }) => {
                                             />
                                         }
                                     />
-                                    {/* {JSON.stringify({attendance: user.attendance, posn: user.posn, posn_no: user.posn_no})} */}
                                 </td>)}
                                 <td>{new Date(user.dates.registeredDate.seconds * 1000).toLocaleDateString()} {new Date(user.dates.registeredDate.seconds * 1000).toLocaleTimeString()}</td>
                                 <td>{user.userObj.f_name} {user.userObj.l_name}</td>
@@ -353,6 +354,14 @@ const ManageParticipants = ({ participants, mode }) => {
                                 </td>)}
                                 {mode !== 'past' && (<td>
                                     <MDBInput disabled={!user.rejected} type="text" onChange={(e) => { user.rejectionReason = e.target.value }} />
+                                </td>)}
+                                {mode !== 'past' && (<td>
+                                    {(user.eventObj.payment_enabled) ? (user.payment_type || 'Online') : 'Free Event'}
+                                </td>)}
+                                {mode !== 'past' && (<td>
+                                    {(user.eventObj.payment_enabled) ? (user.payment_link ? <Button href={user.payment_link} target="blank" color="primary">
+                                        View Reciept
+                                    </Button> : '') : 'Free Event'}
                                 </td>)}
                                 {mode === 'past' && (<td>
                                     <MDBInput type="text" onChange={(e) => { user.attendance = e.target.value }} value={user.attendance} />

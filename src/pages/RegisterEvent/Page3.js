@@ -70,14 +70,28 @@ const Page3 = ({ handleBack, formData, handleNext }) => {
                         </MDBCol>
                     </MDBRow>
                     <MDBRow>
-                        <MDBBtn color="elegant" onClick={() => clickHandler('back')}>Back</MDBBtn>
+                        <MDBCol>
+                        <MDBBtn block color="elegant" onClick={() => clickHandler('back')}>Back</MDBBtn>
                         <MDBBtn
+                        block
                             variant="contained"
                             color="elegant"
                             onClick={() => clickHandler('next')}
                         >
-                            Pay and Complete Registration
+                            {formData.payment_type === 'Online' && (
+                                <span>
+                                    Pay and Complete Registration
+                                </span>
+                            )}
+                            {formData.payment_type !== 'Online' && (
+                                <span>
+                                    Complete Registration
+                                </span>
+                            )}
+                            
                         </MDBBtn>
+                        </MDBCol>
+                        
                     </MDBRow>
                 </div>
             </form>

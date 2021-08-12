@@ -1,12 +1,11 @@
-import React, {useEffect, Fragment} from "react";
-import { MDBBtn, MDBCard, MDBCardHeader, MDBCardBody, MDBCardText, MDBTable, MDBTableBody, MDBTableHead } from "mdbreact";
+import React, {Fragment, useState} from "react";
+import { MDBBtn, MDBCard, MDBCardHeader, MDBIcon, MDBCardBody, MDBCardText, MDBTable,MDBModal, MDBTableBody, MDBTableHead } from "mdbreact";
+import PollModal from './PollModal';
+import generateCertificate from '../../util/PrintHandler';
 
 const PastAttendedEvents = ({ pastEvents }) => {
-
-    useEffect(() => {
-        console.log('Here');
-        console.log(pastEvents);
-    },[pastEvents]);
+    const [isPollModalOpen, setIsPollModalOpen] = useState(false);
+    const [pollData, setPollData] = useState({});
 
     const columns = [
         {
@@ -30,12 +29,12 @@ const PastAttendedEvents = ({ pastEvents }) => {
             sort: 'asc'
         },
         {
-            label: 'Poll Details',
+            label: 'Attendance',
             field: '',
             sort: 'asc'
         },
         {
-            label: 'Attendance',
+            label: 'Poll Details',
             field: '',
             sort: 'asc'
         },
@@ -71,8 +70,17 @@ const PastAttendedEvents = ({ pastEvents }) => {
                                     {event.participant && (
                                         <Fragment>
                                         <td>{event && event.participant ? event.participant.perf_type : ''}</td>
-                                        <td></td>
-                                        <td></td>
+                                        <td>{event && event.participant ? event.participant.attendance : 'Not yet Updated'}</td>
+                                        <td>
+                                        <MDBBtn
+                                        className="poll-btn"
+                                        variant="contained"
+                                        color="elegant"
+                                        onClick={() => { setPollData({ id: event.participant.id, poll_good: event.participant.poll_good, poll_vgood: event.participant.poll_vgood, poll_excel: event.participant.poll_excel }); setIsPollModalOpen(true) }}
+                                    >
+                                        <MDBIcon icon="poll" className="ml-1" />
+                                    </MDBBtn>
+                                        </td>
                                         </Fragment>
                                     )}
                                     {!event.participant && (
@@ -80,13 +88,17 @@ const PastAttendedEvents = ({ pastEvents }) => {
                                         <td colSpan="3">Attended as Audience</td>
                                         </Fragment>
                                     )}
-                                    <td><MDBBtn color="elegant" disabled={!event.participant} size="sm">Download Certificate</MDBBtn></td>
+                                    <td><MDBBtn color="elegant" onClick={() => {generateCertificate(event)}} disabled={!event.participant || !event.participant.attendance || event.participant.attendance === 'N'} size="sm">Download Certificate</MDBBtn></td>
                                 </tr>
                             ))}
                         </MDBTableBody>
                     </MDBTable>
                 </MDBCardText>
             </MDBCardBody>
+            <MDBModal id="poll-modal" isOpen={isPollModalOpen} centered>
+                <PollModal polldata={pollData} close={() => { setIsPollModalOpen(false); }} />
+            </MDBModal>
+            <div id="certificate-test"></div>
         </MDBCard>
     );
 }

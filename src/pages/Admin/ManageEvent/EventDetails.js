@@ -35,7 +35,6 @@ const validationSchema = yup.object().shape({
 });
 
 const EventDetails = ({ eventDetails, mode }) => {
-    const [posterImgBig, setPosterImgBig] = useState(false);
     const [posterImgSmall, setPosterImgSmall] = useState(false);
     const { events, setEvents } = useContext(EventContext);
     const { setIsLoading } = useContext(AuthContext);
@@ -49,14 +48,12 @@ const EventDetails = ({ eventDetails, mode }) => {
             e_time: eventDetails ? new Date('1970-01-01T' + eventDetails.e_time) : (new Date()).getTime(),
             can_register: eventDetails ? eventDetails.can_register : false,
             is_reg_open: eventDetails ? eventDetails.is_reg_open : false,
-            poster_link_big: (eventDetails && eventDetails.poster_link_big) ? eventDetails.poster_link_big : '',
             poster_link_small: (eventDetails && eventDetails.poster_link_small) ? eventDetails.poster_link_small : '',
             emeeting_link: (eventDetails && eventDetails.emeeting_link) ? eventDetails.emeeting_link : '',
             tc: (eventDetails && eventDetails.tc) ? eventDetails.tc : '',
             payment_enabled: (eventDetails && eventDetails.payment_enabled) ? eventDetails.payment_enabled : false,
             part_amt: (eventDetails && eventDetails.part_amt) ? eventDetails.part_amt : 0,
             audience_amt: (eventDetails && eventDetails.audience_amt) ? eventDetails.audience_amt : 0,
-            poster_big: null,
             poster_small: null
         },
         validationSchema,
@@ -187,62 +184,7 @@ const EventDetails = ({ eventDetails, mode }) => {
                         <MDBCol>
                             <MDBRow>
                                 <MDBCol>
-                                    <label>Poster for Big Screen</label>
-                                </MDBCol>
-                            </MDBRow>
-                            {
-                                eventDetails && !posterImgBig && (
-                                    <Fragment>
-                                        <MDBRow>
-                                            <MDBCol>
-                                                <img className="poster-preview" src={eventDetails.poster_link_big} />
-                                            </MDBCol>
-                                        </MDBRow>
-                                        <MDBRow>
-                                            <MDBCol>
-                                                <MDBBtn
-                                                    disabled={mode==='past'}
-                                                    variant="contained"
-                                                    color="elegant"
-                                                    type="button"
-                                                    onClick={() => setPosterImgBig(true)}
-                                                >
-                                                    Change Image
-                                                </MDBBtn>
-                                            </MDBCol>
-                                        </MDBRow>
-                                    </Fragment>
-                                )
-                            }
-                            {
-                                posterImgBig && (
-                                    <Fragment>
-                                        <MDBRow>
-                                            <MDBCol>
-                                                <MDBInput icon="file" group type="file" onChange={(e) => { createFormik.setFieldValue("poster_big", e.target.files[0]); }}
-                                                    validate />
-                                            </MDBCol>
-                                        </MDBRow>
-                                        <MDBRow>
-                                            <MDBCol>
-                                                <MDBBtn
-                                                    variant="contained"
-                                                    color="elegant"
-                                                    type="button"
-                                                    onClick={() => { setPosterImgBig(false); createFormik.setFieldValue("poster_big", null) }}
-                                                >
-                                                    Cancel
-                                                </MDBBtn>
-                                            </MDBCol>
-                                        </MDBRow>
-                                    </Fragment>
-                                )
-                            }
-                        </MDBCol>
-                        <MDBCol>
-                            <MDBRow>
-                                <MDBCol>
-                                    <label>Poster for Big Screen</label>
+                                    <label>Poster</label>
                                 </MDBCol>
                             </MDBRow>
                             {

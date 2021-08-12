@@ -14,62 +14,62 @@ const Page1 = ({ handleBack, eventDetails, handleNext, userDetails }) => {
             <h2 className="register-pg-title">Event Details</h2>
             <br/>
             <MDBRow>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                     <span className="event-title-bold">Event Date</span>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                 {`${eventDetails.e_date.toDate().toLocaleDateString()}`}
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                 <span className="event-title-bold">Event Time</span>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                     {/* {new Date(eventDetails.datetime.seconds * 1000).toUTCString()} */}
                     11:11 AM
                 </MDBCol>
                 
             </MDBRow>
             <MDBRow>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                 <span className="event-title-bold">Event Platform</span>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                     {eventDetails.type}
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                 <span className="event-title-bold">Event Payment</span>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                     {eventDetails.payment_enabled ? 'Paid' : 'Free'}
                 </MDBCol>
             </MDBRow>
             <br/>
             <h2  className="register-pg-title">User Details</h2>
             <MDBRow className="mt-4">
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                 <span className="event-title-bold">Name</span>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                     {userDetails.f_name} {userDetails.l_name}
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                 <span className="event-title-bold">Email</span>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                     {userDetails.email}
                 </MDBCol>
             </MDBRow>
             <MDBRow>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                 <span className="event-title-bold">Mobile No.</span>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                     {userDetails.mobile}
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                 <span className="event-title-bold">City</span>
                 </MDBCol>
-                <MDBCol>
+                <MDBCol lg="3" md="6">
                     {userDetails.city}
                 </MDBCol>
             </MDBRow>

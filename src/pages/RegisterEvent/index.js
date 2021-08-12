@@ -140,7 +140,7 @@ const RegisterEvent = ({ close, eventDetails, userDetails }) => {
         // const userId= eventDetails.user.split('/')[2];
         // const order_id = `order_${userId}`;
         // Payment Happens Here
-        if (regDetails.eventObj.payment_enabled) {
+        if (regDetails.eventObj.payment_enabled && regDetails.payment_type === 'Online') {
             makePayment(regDetails);
         } else {
             createParticipationCall(regDetails);

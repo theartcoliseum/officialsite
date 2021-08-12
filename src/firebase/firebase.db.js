@@ -36,6 +36,29 @@ const getUserObject = (email) => {
     return promise;
 }
 
+const updateAboutUs = (text,successCallback) =>{
+    db.collection("content").doc("about").update({
+        value : text
+    })
+    .then((e)=>{
+        successCallback(e);
+    })
+    .catch((error)=>{
+        handleApiError(error);
+    })
+}
+
+const getAboutUsData = (callback) =>{
+    var docRef = db.collection("content").doc("about");
+    docRef.get().then((doc) => {
+        if (doc.exists) {
+            callback(doc.data().value);
+        }
+    }).catch((error) => {
+        handleApiError(error);
+    });
+}
+
 const updateUserDB = (id, mobile, city, successCallback) => {
     db.collection("users").doc(id).update({
         mobile: mobile,
@@ -334,5 +357,7 @@ export {
     updateEvent,
     updateParticipationList,
     updateUserDB,
-    createAudience
+    createAudience,
+    updateAboutUs,
+    getAboutUsData
 };

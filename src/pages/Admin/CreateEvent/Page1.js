@@ -25,9 +25,6 @@ const validationSchema = yup.object().shape({
     // .required("Event Date is mandatory"),
     // e_time: yup
     // .string()
-    // .required("Event Date is mandatory"),
-    // poster_link_big: yup
-    // .string()
     // .required("Please upload poster link"),
     // poster_link_small: yup
     // .string()
@@ -47,7 +44,6 @@ const Page1 = ({ handleBack, formData, handleNext }) => {
             e_time: formData.e_time || (new Date()).getTime(),
             can_register: formData.can_register || false,
             is_reg_open: formData.is_reg_open || false,
-            poster_link_big: formData.poster_link_big || '',
             poster_link_small: formData.poster_link_small || '',
             emeeting_link: formData.emeeting_link || '',
             callback: 'next'
@@ -150,15 +146,7 @@ const Page1 = ({ handleBack, formData, handleNext }) => {
                     </MDBRow>
                     <MDBRow>
                         <MDBCol>
-                            <label>Upload Poster for Big Screen</label>
-                            <MDBInput icon="file" group type="file" onChange={(e) => {createFormik.setFieldValue("poster_link_big", e.target.files[0]);}}
-                                validate />
-                                  <div className="validation-error">
-                                    {(createFormik.errors.poster_link_big && createFormik.touched.poster_link_big)? createFormik.errors.poster_link_big : null}
-                                </div>
-                        </MDBCol>
-                        <MDBCol>
-                            <label>Upload Poster for Small Screen</label>
+                            <label>Upload Poster</label>
                             <MDBInput icon="file" group type="file" onChange={(e) => {createFormik.setFieldValue("poster_link_small", e.target.files[0]);}}
                              validate />
                                <div className="validation-error">

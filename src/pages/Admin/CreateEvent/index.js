@@ -78,6 +78,8 @@ const CreateEvent = ({ close }) => {
             t = new Date(e_time._i).toLocaleTimeString();
         }
         createEvent({ e_date: d, e_time: t, ...finalValues }, (createdEvent) => {
+            const link = `${window.location.origin}/${createEvent.id}`;
+            console.log(link);
             const upcoming = [...events.upcomingEvents, createdEvent];
             setEvents({ ...events, upcomingEvents: upcoming });
             setIsLoading(false);

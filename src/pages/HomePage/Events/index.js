@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { MDBCarousel, MDBCarouselInner, MDBCarouselItem, MDBView, MDBContainer, MDBRow, MDBCol, MDBModal, MDBBtn } from
   "mdbreact";
+  import { useParams } from 'react-router-dom';
 import firebase from "firebase/app";
 import Login from '../../../components/Login'
 import RegisterEvent from '../../RegisterEvent'
@@ -14,7 +15,9 @@ const Events = ({ eventlist }) => {
   const [allEvents, setAllEvents] = useState([]);
 
   const { user, setUser, setIsLoading } = useContext(AuthContext);
+  let { id } = useParams();
 
+  useParams(() => {}, [id]);
 
   const registerEvent = function (i,j) {
     const eventConsidered = allEvents[i][j];
@@ -28,7 +31,20 @@ const Events = ({ eventlist }) => {
         setIsLoginModalOpen(true);
       }
     }
-  }
+  };
+
+  const registerEventByEvent = function (eventConsidered) {
+    setRegisterModalData(eventConsidered);
+    if (eventConsidered.is_reg_open) {
+      const user = firebase.auth().currentUser;
+      if (user) {
+        setIsCreateEventModalOpen(true);
+      }
+      else {
+        setIsLoginModalOpen(true);
+      }
+    }
+  };
 
   useEffect(() => {
     if (eventlist && eventlist.length > 0) {
@@ -54,6 +70,12 @@ const Events = ({ eventlist }) => {
         groupedEvents.push(group);
       }
       setAllEvents(groupedEvents);
+      if(id) {
+        const eventConsidered = eventlist.find((i) => i.id === id);
+        if(eventConsidered) {
+          registerEventByEvent(eventConsidered);
+        }        
+      }
     }
   }, [eventlist]);
 

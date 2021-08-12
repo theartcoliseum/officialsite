@@ -50,21 +50,19 @@ const updateUserDB = (id, mobile, city, successCallback) => {
 }
 
 // EVENT FUNCTIONS
-const createEvent = async ({ poster_link_big, name, poster_link_small, e_date, ...eventDetails }, successCallback) => {
-    const uploadBigposter = await uploadFile(poster_link_big, `events/${name}/poster_big.jpg`);
+const createEvent = async ({ name, poster_link_small, e_date, ...eventDetails }, successCallback) => {
     const uploadSmallposter = await uploadFile(poster_link_small, `events/${name}/poster_small.jpg`);
     const parts = e_date.split('/');
     const actualDate = new Date(parts[2], parts[1] - 1, parts[0]);
     db.collection("events").add({
         e_date: firebase.firestore.Timestamp.fromDate(new Date(actualDate)),
         name,
-        poster_link_big: uploadBigposter,
         poster_link_small: uploadSmallposter,
         ...eventDetails
     })
         .then((docRef) => {
             successCallback({
-                id: docRef.id, poster_link_big: uploadBigposter, name,
+                id: docRef.id, name,
                 poster_link_small: uploadSmallposter, e_date: firebase.firestore.Timestamp.fromDate(new Date(actualDate)), ...eventDetails
             });
         })
@@ -216,11 +214,8 @@ const getPastEventsAudience = () => {
 };
 
 const updateEvent = async (eventDetails, successCallback) => {
-    let { id, name, e_date, poster_big, poster_small, poster_link_big, poster_link_small, ...details } = eventDetails;
+    let { id, name, e_date, poster_big, poster_small, poster_link_small, ...details } = eventDetails;
     // If files have changed then re-upload them
-    if (poster_big) {
-        poster_link_big = await uploadFile(poster_big, `events/${name}/poster_big.jpg`);
-    }
     if (poster_small) {
         poster_link_small = await uploadFile(poster_small, `events/${name}/poster_big.jpg`);
     }
@@ -230,7 +225,7 @@ const updateEvent = async (eventDetails, successCallback) => {
     const actualDate = new Date(parts[2], parts[1] - 1, parts[0]);
     const eventObj = {
         e_date: firebase.firestore.Timestamp.fromDate(new Date(actualDate)),
-        name, poster_link_big, poster_link_small, ...details
+        name, poster_link_small, ...details
     };
     db.collection("events").doc(id).update(eventObj).then(() => {
         console.log('Event Updated Successfully');
@@ -242,12 +237,16 @@ const updateEvent = async (eventDetails, successCallback) => {
 
 // Participation Functions
 // EVENT FUNCTIONS
-const createParticipation = async ({ audition_link, audition_url, user, event, ...participationDetails }, successCallback) => {
+const createParticipation = async ({ audition_link, audition_url, payment_type, payment_reciept, user, event, ...participationDetails }, successCallback) => {
     let link = '';
     if (audition_link) {
         link = await uploadFile(audition_link, `auditions/${event}/${user}/${audition_link.filename}`);
     } else {
         link = audition_url;
+    }
+    let payment_link = '';
+    if(payment_type !== 'Online') {
+        payment_link = await uploadFile(payment_reciept, `payment/${event}/${user}/reciept`);
     }
     const participationObj = {
         user,
@@ -255,6 +254,8 @@ const createParticipation = async ({ audition_link, audition_url, user, event, .
         dates: {
             registeredDate: firebase.firestore.Timestamp.fromDate(new Date())
         },
+        payment_type,
+        payment_link,
         audition: link,
         status: 'Registered',
         ...participationDetails

@@ -19,16 +19,16 @@ const Header = () => {
     let history = useHistory();
     const location = useLocation();
 
-    const {user, setUser, setIsLoading, isLoading} = useContext(AuthContext);
+    const { user, setUser, setIsLoading, isLoading } = useContext(AuthContext);
 
     const [isOpen, setIsOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-    const [isUpdateModalOpen, setUpdateModalOpen]  = useState(false);
+    const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
     const [isHome, setIsHome] = useState(true);
 
     useEffect(() => {
-        if(user) {
-            if(user.mobile==='' && user.city ===''){
+        if (user) {
+            if (user.mobile === '' && user.city === '') {
                 setUpdateModalOpen(true);
             }
             history.push(`/protected`);
@@ -41,9 +41,9 @@ const Header = () => {
 
 
     useEffect(() => {
-        if(location && location.pathname) {
+        if (location && location.pathname) {
             const paths = location.pathname.split('/');
-            if(paths.length > 2) {
+            if (paths.length > 2) {
                 setIsHome(false);
             } else {
                 setIsHome(true);
@@ -55,14 +55,14 @@ const Header = () => {
         setIsOpen(!isOpen);
     }
 
-    const updateSucccess = (mobile, city) =>{
-        setUser({...user, mobile, city});
+    const updateSucccess = (mobile, city) => {
+        setUser({ ...user, mobile, city });
         setUpdateModalOpen(false);
         setIsLoading(false);
     }
 
-    const updateUser = (user,mobile,city) =>{
-        updateUserDB(user.id,mobile,city,updateSucccess);
+    const updateUser = (user, mobile, city) => {
+        updateUserDB(user.id, mobile, city, updateSucccess);
     }
 
     const gotoDashboard = () => {
@@ -99,51 +99,66 @@ const Header = () => {
                 <MDBCollapse id="navbarCollapse3" isOpen={isOpen} navbar>
                     <MDBNavbarNav left>
                         {isHome && (<Fragment>
-                        <MDBNavItem>
-                            <MDBBtn color="elegant">
-                                <Link activeClass="active" to="events" spy={true} smooth={true} duration={1000}>
-                                    Events
+                            <MDBNavItem>
+                                <MDBBtn color="elegant">
+                                    <Link activeClass="active" to="events" spy={true} smooth={true} duration={1000}>
+                                        Events
                                     </Link>
-                            </MDBBtn>
-                        </MDBNavItem>
-                        <MDBNavItem>
-                            <MDBBtn color="elegant">
-                                <Link activeClass="active" to="about" spy={true} smooth={true} duration={1000}>
-                                    About Us
+                                </MDBBtn>
+                            </MDBNavItem>
+                            <MDBNavItem>
+                                <MDBBtn color="elegant">
+                                    <Link activeClass="active" to="about" spy={true} smooth={true} duration={1000}>
+                                        About Us
                                     </Link>
-                            </MDBBtn>
-                        </MDBNavItem>
-                        <MDBNavItem>
-                            <MDBBtn color="elegant">
-                                <Link activeClass="active" to="services" spy={true} smooth={true} duration={1000}>
-                                    Services
+                                </MDBBtn>
+                            </MDBNavItem>
+                            <MDBNavItem>
+                                <MDBBtn color="elegant">
+                                    <Link activeClass="active" to="services" spy={true} smooth={true} duration={1000}>
+                                        Services
                                     </Link>
-                            </MDBBtn>
-                        </MDBNavItem>
-                        <MDBNavItem>
-                            <MDBBtn color="elegant">
-                                <Link activeClass="active" to="team" spy={true} smooth={true} duration={1000}>
-                                    Team
+                                </MDBBtn>
+                            </MDBNavItem>
+                            <MDBNavItem>
+                                <MDBBtn color="elegant">
+                                    <Link activeClass="active" to="team" spy={true} smooth={true} duration={1000}>
+                                        Team
                                     </Link>
-                            </MDBBtn>
-                        </MDBNavItem>
+                                </MDBBtn>
+                            </MDBNavItem>
                         </Fragment>)}
                     </MDBNavbarNav>
                     <MDBNavbarNav right>
-                        <MDBNavItem>
-                            <MDBNavLink className="waves-effect waves-light" to="#!">
+                        <MDBNavItem className="header-link">
+                            <a href="https://instagram.com/theartcoliseum?utm_medium=copy_link" target="blank">
+                                <MDBIcon fab icon="linkedin-in" />
+                            </a>
+                        </MDBNavItem>
+                        <MDBNavItem className="header-link">
+                            <a href="mailto:theartcoliseumofficial@gmail.com" target="blank">
+                            <MDBIcon icon="envelope" />
+                            </a>
+                        </MDBNavItem>
+                        <MDBNavItem className="header-link">
+                            <a href="https://api.whatsapp.com/send?phone=919436960689" target="blank">
+                                <MDBIcon fab icon="whatsapp" />
+                            </a>
+                        </MDBNavItem>
+                        <MDBNavItem className="header-link">
+                            <a href="https://twitter.com/art_coliseum" target="blank">
                                 <MDBIcon fab icon="twitter" />
-                            </MDBNavLink>
+                            </a>
                         </MDBNavItem>
-                        <MDBNavItem>
-                            <MDBNavLink className="waves-effect waves-light" to="#!">
+                        <MDBNavItem className="header-link">
+                            <a href="https://www.facebook.com/theartcoliseum/" target="blank">
                                 <MDBIcon fab icon="facebook" />
-                            </MDBNavLink>
+                            </a>
                         </MDBNavItem>
-                        <MDBNavItem>
-                            <MDBNavLink className="waves-effect waves-light" to="#!">
+                        <MDBNavItem className="header-link">
+                            <a href="https://instagram.com/theartcoliseum?utm_medium=copy_link" target="blank">
                                 <MDBIcon fab icon="instagram" />
-                            </MDBNavLink>
+                            </a>
                         </MDBNavItem>
                         <MDBNavItem>
                             <MDBDropdown right>
@@ -154,15 +169,15 @@ const Header = () => {
                                     {!user && <MDBDropdownItem onClick={login} >Login</MDBDropdownItem>}
                                     {user && (
                                         <Fragment>
-                                        <MDBDropdownItem className="pointer-none">Welcome, {user.f_name}</MDBDropdownItem>
+                                            <MDBDropdownItem className="pointer-none">Welcome, {user.f_name}</MDBDropdownItem>
                                             <MDBDropdownItem onClick={goToHome}>Home</MDBDropdownItem>
-                                        <MDBDropdownItem onClick={gotoDashboard}>My Dashboard</MDBDropdownItem>
-                                        <MDBDropdownItem onClick={gotoAdminDashboard}>Admin Dashboard</MDBDropdownItem>
-                                        <MDBDropdownItem divider />
-                                        <MDBDropdownItem onClick={() => signout(logoutCallback)}>Logout</MDBDropdownItem>
+                                            <MDBDropdownItem onClick={gotoDashboard}>My Dashboard</MDBDropdownItem>
+                                            <MDBDropdownItem onClick={gotoAdminDashboard}>Admin Dashboard</MDBDropdownItem>
+                                            <MDBDropdownItem divider />
+                                            <MDBDropdownItem onClick={() => signout(logoutCallback)}>Logout</MDBDropdownItem>
                                         </Fragment>
                                     )}
-                                    
+
                                 </MDBDropdownMenu>
                             </MDBDropdown>
                         </MDBNavItem>

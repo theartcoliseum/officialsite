@@ -12,7 +12,6 @@ import AuthenticatedLayout from './layouts/AuthenticatedLayout';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
-// import Spinner from './components/Spinner';
 import HomePage from './pages/HomePage';
 
 function App() {
@@ -25,12 +24,15 @@ function App() {
             <Header />
             <div>
               <Switch>
-                <Route path="/" exact>
+                <Route exact path="/">
                   <HomePage />
                 </Route>
                 <PrivateRoute path='/protected'>
                   <AuthenticatedLayout />
                 </PrivateRoute>
+                <Route path="/:id">
+                  <HomePage />
+                </Route>
               </Switch>
             </div>
             <Footer />

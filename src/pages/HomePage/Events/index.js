@@ -48,6 +48,7 @@ const Events = () => {
       if(!registered) {
         registerEventByEvent(events.eventToBeOpened);
       }else {
+        setEvents({...events, eventToBeOpened: null});
         handleApiError({message: 'You are already Registered for this event!'});
       }    
     }
